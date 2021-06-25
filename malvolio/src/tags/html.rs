@@ -5,11 +5,11 @@ A copy of this license can be found in the `licenses` directory at the root of t
 use std::fmt::Display;
 
 use super::{body::Body, head::Head};
-#[cfg(feature = "with_rocket")]
+#[cfg(all(feature = "with_rocket", not(feature = "with_proptest")))]
 use rocket::http::Status;
-#[cfg(feature = "with_rocket")]
+#[cfg(all(feature = "with_rocket", not(feature = "with_proptest")))]
 use rocket::{response::Responder, Response};
-#[cfg(feature = "with_rocket")]
+#[cfg(all(feature = "with_rocket", not(feature = "with_proptest")))]
 use std::io::Cursor;
 
 #[derive(Clone, Debug)]
@@ -52,7 +52,7 @@ impl Display for Html {
     }
 }
 
-#[cfg(feature = "with_rocket")]
+#[cfg(all(feature = "with_rocket", not(feature = "with_proptest")))]
 impl<'r, 'o: 'r> Responder<'r, 'o> for Html {
     fn respond_to(self, _: &rocket::Request) -> rocket::response::Result<'o> {
         Response::build()
@@ -82,7 +82,7 @@ impl Html {
         self
     }
 
-    #[cfg(feature = "with_rocket")]
+    #[cfg(all(feature = "with_rocket", not(feature = "with_proptest")))]
     /// Add the corresponding status code to return this HTML document with. Note that this is only
     /// available if you have enabled the `with_rocket` feature.
     pub fn status(mut self, status: Status) -> Self {
