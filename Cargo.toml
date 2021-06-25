@@ -1,0 +1,2 @@
+[workspace]
+members = ["malvolio", "malvolio_codegen"]

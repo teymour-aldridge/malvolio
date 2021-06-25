@@ -1,0 +1,27 @@
+[package]
+name = "malvolio"
+version = "0.2.0"
+authors = ["teymour-aldridge <teymour.aldridge@icloud.com>"]
+edition = "2018"
+readme = "README.md"
+description = "An HTML templating library."
+repository = "https://github.com/lovelace-ed/lovelace"
+homepage = "https://github.com/lovelace-ed/lovelace"
+license = "MPL-2.0"
+keywords = ["web-applications", "HTML"]
+
+[features]
+with_rocket = ["rocket"]
+with_proptest = ["proptest", "proptest-derive"]
+pub_fields = ["malvolio_codegen"]
+
+[dependencies]
+ammonia = "3.1.1"
+derivative = "2.2.0"
+rocket = { version="0.5.0-rc.1", optional=true }
+malvolio_codegen = { path="../malvolio_codegen", optional=true }
+proptest = { version="1.0.0", optional=true }
+proptest-derive = { version="0.3.0", optional=true }
+
+[dev-dependencies]
+scraper = "0.12.0"

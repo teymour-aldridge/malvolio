@@ -1,0 +1,12 @@
+[package]
+name = "malvolio_codegen"
+version = "0.1.0"
+authors = ["teymour-aldridge <teymour.aldridge@icloud.com>"]
+edition = "2018"
+
+[lib]
+proc-macro = true
+
+[dependencies]
+quote = "1.0.9"
+syn = "1.0.73"
