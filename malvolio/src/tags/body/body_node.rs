@@ -79,7 +79,7 @@ pub(crate) mod body_proptest {
                     .prop_map(|prop| { BodyNode::Div(Div::default().children(prop)) }),
                 prop::collection::vec(inner.clone(), 0..10)
                     .prop_map(|item| { BodyNode::P(P::default().children(item)) }),
-                prop::collection::vec(inner.clone(), 0..10)
+                prop::collection::vec(inner, 0..10)
                     .prop_map(|item| { BodyNode::Form(Form::default().children(item)) })
             ]
         })
