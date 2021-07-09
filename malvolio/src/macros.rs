@@ -261,7 +261,7 @@ macro_rules! to_html {
         #[cfg(not(tarpaulin))]
         /// Turn this item into a `VNode`. You only need to call this on the item that you
         /// return in the `html` function.
-        pub fn to_html(self) -> yew::virtual_dom::VNode {
+        pub fn yew(self) -> yew::virtual_dom::VNode {
             $crate::vnode::IntoVNode::into_vnode(self)
         }
     };

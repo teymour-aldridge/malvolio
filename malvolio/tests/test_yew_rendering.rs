@@ -38,7 +38,7 @@ mod test {
         component_named_app_with_html!(A::default()
             .attribute(malvolio::prelude::Href::new("https://example.com"))
             .attribute(malvolio::prelude::Id::new("link"))
-            .to_html());
+            .yew());
         yew::initialize();
 
         let document = web_sys::window().unwrap().document().unwrap();
@@ -86,7 +86,7 @@ mod test {
                     .attribute(Type::Submit)
                     .attribute(Value::new("Create class")),
             )
-            .to_html());
+            .yew());
         yew::initialize();
 
         let document = web_sys::window().unwrap().document().unwrap();
@@ -136,7 +136,7 @@ mod test {
                     .attribute(Id::new("heading1-1"))
                     .attribute(Class::from("some-class"))
             )
-            .to_html());
+            .yew());
         yew::initialize();
         let document = web_sys::window().unwrap().document().unwrap();
         let root = document
