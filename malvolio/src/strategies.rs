@@ -2,6 +2,7 @@ use std::{borrow::Cow, collections::HashMap};
 
 use proptest::prelude::*;
 
+/// Creates `HashMap`'s made out of random strings.
 pub(crate) fn hashmap_strategy(
 ) -> impl Strategy<Value = HashMap<Cow<'static, str>, Cow<'static, str>>> {
     prop::collection::vec((".+", ".*"), 0..100).prop_map(|attrs| {

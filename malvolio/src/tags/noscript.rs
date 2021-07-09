@@ -41,6 +41,22 @@ impl Display for NoScript {
 
 into_grouping_union!(NoScript, BodyNode);
 
+#[cfg(all(feature = "with_yew", not(feature = "strategies")))]
+/// Not going to be very useful, but needed for trait implementations.
+mod vnode_impls {
+    use yew::virtual_dom::VTag;
+
+    use crate::vnode::IntoVNode;
+
+    use super::*;
+
+    impl IntoVNode for NoScript {
+        fn into_vnode(self) -> yew::virtual_dom::VNode {
+            VTag::new("noscript").into()
+        }
+    }
+}
+
 #[cfg(test)]
 mod test {
     use super::NoScript;

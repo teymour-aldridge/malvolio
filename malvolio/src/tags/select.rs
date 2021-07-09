@@ -101,3 +101,29 @@ into_attribute_for_grouping_enum!(SelectAttr, Name, Class, Id);
 into_grouping_union!(Name, SelectAttr);
 into_grouping_union!(Class, SelectAttr);
 into_grouping_union!(Id, SelectAttr);
+
+#[cfg(all(feature = "with_yew", not(feature = "strategies")))]
+mod vnode_impls {
+    use yew::virtual_dom::VTag;
+
+    use crate::vnode::IntoVNode;
+
+    use super::*;
+
+    impl IntoVNode for Select {
+        fn into_vnode(self) -> yew::virtual_dom::VNode {
+            let mut tag = VTag::new("select");
+            for (k, v) in self.attrs {
+                if let ::std::borrow::Cow::Borrowed(string) = k {
+                    tag.add_attribute(string, v);
+                } else {
+                    panic!("Dynamic keys for Yew are not yet supported.")
+                }
+            }
+            for child in self.children {
+                tag.add_child(child.into_vnode());
+            }
+            tag.into()
+        }
+    }
+}

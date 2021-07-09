@@ -7,6 +7,7 @@ use std::{borrow::Cow, collections::HashMap, fmt::Display};
 use crate::{
     attributes::{common::Class, IntoAttribute},
     prelude::{Style, H1, H2, H3, H4, H5, H6},
+    to_html,
 };
 
 use crate::{into_attribute_for_grouping_enum, into_grouping_union, prelude::Id, utility_enum};
@@ -235,6 +236,8 @@ impl Div {
     {
         self.child(c.into())
     }
+
+    to_html!();
 }
 
 impl Display for Div {
@@ -272,6 +275,32 @@ into_grouping_union!(Id, DivAttr);
 into_grouping_union!(Class, DivAttr);
 
 into_grouping_union!(Style, DivAttr);
+
+#[cfg(all(feature = "with_yew", not(feature = "strategies")))]
+mod vnode_impls {
+    use yew::virtual_dom::VTag;
+
+    use crate::vnode::IntoVNode;
+
+    use super::*;
+
+    impl IntoVNode for Div {
+        fn into_vnode(self) -> yew::virtual_dom::VNode {
+            let mut tag = VTag::new("div");
+            for (k, v) in self.attrs {
+                if let ::std::borrow::Cow::Borrowed(string) = k {
+                    tag.add_attribute(string, v);
+                } else {
+                    panic!("Dynamic keys for Yew are not yet supported.")
+                }
+            }
+            for child in self.children {
+                tag.add_child(child.into_vnode());
+            }
+            tag.into()
+        }
+    }
+}
 
 #[cfg(test)]
 mod tests {

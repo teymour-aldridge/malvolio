@@ -1,8 +1,4 @@
-#[cfg(feature = "with_yew")]
-use std::rc::Rc;
 use std::{borrow::Cow, collections::HashMap, fmt::Display};
-#[cfg(feature = "with_yew")]
-use yew::virtual_dom::Listener;
 
 use crate::{
     attributes::IntoAttribute, into_attribute_for_grouping_enum, into_grouping_union, utility_enum,
@@ -132,5 +128,31 @@ mod test {
             a.attr("alt").unwrap(),
             "An animated picture of a cat doing some humorous task."
         );
+    }
+}
+
+#[cfg(all(feature = "with_yew", not(feature = "strategies")))]
+mod vnode_impls {
+    use yew::virtual_dom::VTag;
+
+    use super::*;
+
+    use crate::vnode::IntoVNode;
+
+    impl IntoVNode for Img {
+        fn into_vnode(self) -> yew::virtual_dom::VNode {
+            let mut tag = VTag::new("img");
+            for (key, value) in self.attrs {
+                if let Cow::Borrowed(key) = key {
+                    tag.add_attribute(key, value);
+                } else {
+                    panic!(
+                        "Dynamic attributes (i.e. `String` or a non-`'static` str) are not yet
+                        supported for Yew."
+                    )
+                }
+            }
+            From::from(tag)
+        }
     }
 }

@@ -224,3 +224,45 @@ macro_rules! component_named_app_with_html {
         }
     }
 }
+
+#[cfg(not(tarpaulin))]
+#[macro_export]
+#[doc(hidden)]
+/// For internal use only.
+macro_rules! heading_of_vnode {
+    ($name:ident) => {
+        #[cfg(all(feature = "with_yew", not(feature = "strategies")))]
+        impl $crate::vnode::IntoVNode for $name {
+            fn into_vnode(self) -> ::yew::virtual_dom::VNode {
+                let mut vtag = ::yew::virtual_dom::VTag::new(stringify!($name));
+                for (k, v) in self.attrs.into_iter() {
+                    if let ::std::borrow::Cow::Borrowed(string) = k {
+                        vtag.add_attribute(string, v);
+                    } else {
+                        panic!("Dynamic keys for Yew are not yet supported.")
+                    }
+                }
+                vtag.add_child(::yew::virtual_dom::VText::new(self.text.to_string()).into());
+                vtag.into()
+            }
+        }
+        impl $name {
+            $crate::to_html!();
+        }
+    };
+}
+
+#[macro_export]
+#[doc(hidden)]
+/// Generates a function to call `into_vnode`
+macro_rules! to_html {
+    () => {
+        #[cfg(all(feature = "with_yew", not(feature = "strategies")))]
+        #[cfg(not(tarpaulin))]
+        /// Turn this item into a `VNode`. You only need to call this on the item that you
+        /// return in the `html` function.
+        pub fn to_html(self) -> yew::virtual_dom::VNode {
+            $crate::vnode::IntoVNode::into_vnode(self)
+        }
+    };
+}

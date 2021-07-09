@@ -25,6 +25,20 @@ impl Display for Text {
     }
 }
 
+#[cfg(all(feature = "with_yew", not(feature = "strategies")))]
+mod vnode_impls {
+    use yew::virtual_dom::VText;
+
+    use crate::vnode::IntoVNode;
+
+    use super::*;
+    impl IntoVNode for Text {
+        fn into_vnode(self) -> yew::virtual_dom::VNode {
+            VText::new(self.text).into()
+        }
+    }
+}
+
 #[cfg(test)]
 mod test_sanitize {
     use super::Text;

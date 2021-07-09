@@ -9,14 +9,7 @@ use crate::{
     utility_enum,
 };
 
-#[cfg(feature = "with_yew")]
-#[cfg(not(tarpaulin))]
-use std::rc::Rc;
 use std::{borrow::Cow, collections::HashMap, fmt::Display};
-
-#[cfg(feature = "with_yew")]
-#[cfg(not(tarpaulin))]
-use yew::virtual_dom::Listener;
 
 use super::body::body_node::BodyNode;
 
@@ -206,6 +199,29 @@ impl Value {
 impl IntoAttribute for Value {
     fn into_attribute(self) -> (Cow<'static, str>, Cow<'static, str>) {
         ("value".into(), self.0)
+    }
+}
+
+#[cfg(all(feature = "with_yew", not(feature = "strategies")))]
+mod vnode_impls {
+    use yew::virtual_dom::VTag;
+
+    use crate::vnode::IntoVNode;
+
+    use super::*;
+
+    impl IntoVNode for Input {
+        fn into_vnode(self) -> yew::virtual_dom::VNode {
+            let mut tag = VTag::new("input");
+            for (k, v) in self.attrs {
+                if let ::std::borrow::Cow::Borrowed(string) = k {
+                    tag.add_attribute(string, v);
+                } else {
+                    panic!("Dynamic keys for Yew are not yet supported.")
+                }
+            }
+            tag.into()
+        }
     }
 }
 

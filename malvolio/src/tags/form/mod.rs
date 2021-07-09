@@ -8,7 +8,7 @@ use crate::{
     attributes::IntoAttribute,
     into_attribute_for_grouping_enum, into_grouping_union,
     prelude::{Style, H1, H2, H3, H4, H5, H6},
-    utility_enum,
+    to_html, utility_enum,
 };
 
 use crate::tags::body::body_node::BodyNode;
@@ -261,6 +261,8 @@ impl Form {
     {
         self.child(c.into())
     }
+
+    to_html!();
 }
 
 impl Display for Form {
@@ -343,6 +345,32 @@ impl Action {
 impl IntoAttribute for Action {
     fn into_attribute(self) -> (Cow<'static, str>, Cow<'static, str>) {
         ("action".into(), self.0)
+    }
+}
+
+#[cfg(all(feature = "with_yew", not(feature = "strategies")))]
+mod vnode_impls {
+    use yew::virtual_dom::VTag;
+
+    use crate::vnode::IntoVNode;
+
+    use super::*;
+
+    impl IntoVNode for Form {
+        fn into_vnode(self) -> yew::virtual_dom::VNode {
+            let mut tag = VTag::new("form");
+            for (key, value) in self.attrs {
+                if let Cow::Borrowed(key) = key {
+                    tag.add_attribute(key, value);
+                } else {
+                    panic!("Yew dynamic tags are not yet supported.")
+                }
+            }
+            for child in self.children {
+                tag.add_child(child.into_vnode());
+            }
+            tag.into()
+        }
     }
 }
 

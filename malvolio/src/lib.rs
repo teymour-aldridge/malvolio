@@ -85,6 +85,10 @@ pub mod prelude;
 pub mod tags;
 /// A text node.
 pub mod text;
+
+#[cfg(all(feature = "with_yew", not(feature = "strategies")))]
+pub(crate) mod vnode;
+
 #[macro_use]
 #[doc(hidden)]
 pub(crate) mod macros;
