@@ -30,6 +30,21 @@ impl Display for Br {
 
 into_grouping_union_without_lifetimes!(Br, BodyNode);
 
+#[cfg(all(feature = "with_yew", not(feature = "strategies")))]
+mod vnode_impls {
+    use yew::virtual_dom::VTag;
+
+    use crate::vnode::IntoVNode;
+
+    use super::*;
+
+    impl IntoVNode for Br {
+        fn into_vnode(self) -> yew::virtual_dom::VNode {
+            VTag::new("br").into()
+        }
+    }
+}
+
 #[cfg(test)]
 mod test {
     use crate::prelude::*;
