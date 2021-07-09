@@ -16,7 +16,7 @@ with_proptest = ["proptest", "proptest-derive"]
 pub_fields = ["malvolio_codegen"]
 
 [dependencies]
-ammonia = "3.1.1"
+ammonia = "3.1.2"
 derivative = "2.2.0"
 rocket = { version = "0.5.0-rc.1", optional = true }
 malvolio_codegen = { path="../malvolio_codegen", optional=true }
