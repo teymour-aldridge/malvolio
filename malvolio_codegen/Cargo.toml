@@ -1,8 +1,13 @@
 [package]
 name = "malvolio_codegen"
 version = "0.1.0"
-authors = ["teymour-aldridge <teymour.aldridge@icloud.com>"]
+authors = ["Teymour Aldridge <teymour.aldridge@icloud.com>"]
+description = "codegen for `malvolio`"
+license = "MPL-2.0"
 edition = "2018"
+documentation = "https://docs.rs/malvolio"
+homepage = "https://github.com/bailion/malvolio"
+repository = "https://github.com/bailion/malvolio"
 
 [lib]
 proc-macro = true
