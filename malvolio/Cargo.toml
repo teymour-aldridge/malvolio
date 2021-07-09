@@ -1,6 +1,6 @@
 [package]
 name = "malvolio"
-version = "0.2.0"
+version = "0.3.0"
 authors = ["teymour-aldridge <teymour.aldridge@icloud.com>"]
 edition = "2018"
 readme = "README.md"
