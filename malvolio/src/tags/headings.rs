@@ -189,8 +189,8 @@ fn test_headings() {
     let h6_selector = scraper::Selector::parse("h6").unwrap();
     let h5_selector = scraper::Selector::parse("h5").unwrap();
     let h4_selector = scraper::Selector::parse("h4").unwrap();
-    assert_eq!(document.select(&h6_selector).collect::<Vec<_>>().len(), 2);
-    assert_eq!(document.select(&h5_selector).collect::<Vec<_>>().len(), 1);
+    assert_eq!(document.select(&h6_selector).count(), 2);
+    assert_eq!(document.select(&h5_selector).count(), 1);
     assert_eq!(
         document
             .select(&h6_selector)

@@ -16,7 +16,7 @@ pub fn write_attributes(
                 f.write_str(b)?;
             }
             Cow::Owned(string) => {
-                f.write_str(&string)?;
+                f.write_str(string)?;
             }
         }
         f.write_str("\"")?;

@@ -347,7 +347,7 @@ impl IntoAttribute for Action {
 }
 
 #[cfg(test)]
-mod form {
+mod test_form {
     use crate::{
         prelude::*,
         tags::input::{Name, Type},
