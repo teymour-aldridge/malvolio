@@ -286,7 +286,7 @@ mod tests {
             .to_string();
         let document = scraper::Html::parse_document(&document);
         let div_selector = scraper::Selector::parse("div").unwrap();
-        assert_eq!(document.select(&div_selector).collect::<Vec<_>>().len(), 1);
+        assert_eq!(document.select(&div_selector).count(), 1);
         let div = document.select(&div_selector).next().unwrap();
         assert_eq!(div.value().attr("class").unwrap(), "some-class");
         assert_eq!(div.value().attr("style").unwrap(), "font-family: Arial;");
@@ -294,11 +294,7 @@ mod tests {
     #[test]
     fn test_div_children() {
         let document = Div::default()
-            .children(
-                vec!["1", "2", "3"]
-                    .into_iter()
-                    .map(|string| P::with_text(string)),
-            )
+            .children(vec!["1", "2", "3"].into_iter().map(P::with_text))
             .to_string();
         dbg!(&document);
         let document = scraper::Html::parse_document(&document);
