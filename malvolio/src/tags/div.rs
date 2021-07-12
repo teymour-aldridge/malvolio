@@ -325,7 +325,6 @@ mod tests {
         let document = Div::default()
             .children(vec!["1", "2", "3"].into_iter().map(P::with_text))
             .to_string();
-        dbg!(&document);
         let document = scraper::Html::parse_document(&document);
         let div_selector = scraper::Selector::parse("div").unwrap();
         let div = document.select(&div_selector).next().unwrap();

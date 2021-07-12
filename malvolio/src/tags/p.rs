@@ -196,7 +196,6 @@ mod test {
             .attribute(Id::new("an-id"))
             .attribute(Class::from("a-class"))
             .to_string();
-        dbg!(&document);
         let document = scraper::Html::parse_document(&document);
         let p = scraper::Selector::parse("p").unwrap();
         let p = document.select(&p).next().unwrap();
