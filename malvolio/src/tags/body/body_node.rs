@@ -62,7 +62,11 @@ pub(crate) mod body_proptest {
     use proptest::prelude::*;
 
     /// Creates `BodyNode`s, useful for testing.
-    pub(crate) fn body_node() -> BoxedStrategy<BodyNode> {
+    pub(crate) fn body_node(
+        depth: u32,
+        desired_size: u32,
+        expected_branch_size: u32,
+    ) -> BoxedStrategy<BodyNode> {
         let leaf = prop_oneof![
             any::<H1>().prop_map(BodyNode::H1),
             any::<H2>().prop_map(BodyNode::H2),
@@ -79,7 +83,7 @@ pub(crate) mod body_proptest {
             any::<Img>().prop_map(BodyNode::Img)
         ];
 
-        leaf.prop_recursive(2, 16, 1, |inner| {
+        leaf.prop_recursive(depth, desired_size, expected_branch_size, |inner| {
             prop_oneof![
                 prop::collection::vec(inner.clone(), 0..10)
                     .prop_map(|prop| { BodyNode::Div(Div::default().children(prop)) }),
@@ -93,13 +97,13 @@ pub(crate) mod body_proptest {
     }
 
     impl Arbitrary for BodyNode {
-        type Parameters = ();
-
-        fn arbitrary_with(_: Self::Parameters) -> Self::Strategy {
-            body_node()
-        }
-
+        type Parameters = (u32, u32, u32);
         type Strategy = BoxedStrategy<BodyNode>;
+
+        fn arbitrary_with(params: Self::Parameters) -> Self::Strategy {
+            let (depth, desired_size, expected_branch_size) = params;
+            body_node(depth, desired_size, expected_branch_size)
+        }
     }
 }
 
