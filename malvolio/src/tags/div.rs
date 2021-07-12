@@ -18,8 +18,7 @@ use super::body::body_node::BodyNode;
 #[derivative(Default(new = "true"))]
 #[cfg_attr(feature = "pub_fields", derive(FieldsAccessibleVariant))]
 #[cfg_attr(feature = "with_proptest", derive(Arbitrary))]
-/// A div. These are useful for ensuring that your HTML pages are well-structured as well as for
-/// applying CSS styling.
+/// A `<div>` tag.
 ///
 /// See the [MDN Web Docs](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/div)
 /// for further information.
@@ -28,15 +27,15 @@ pub struct Div {
     attrs: HashMap<Cow<'static, str>, Cow<'static, str>>,
 }
 
-/// Creates a new `Div` tag – functionally equivalent to `Div::new()` (but easier to type.)
+/// Creates a new `<div>` tag – functionally equivalent to `Div::new()` (but easier to type.)
 pub fn div() -> Div {
     Div::new()
 }
 
 impl Div {
-    /// Attaches a number of children to a `Div`. This method accepts anything which can be turned
-    /// into an iterator of `BodyNode`'s (which should be any type in this crate that you would
-    /// expect to be able to use in the body of an HTML document).
+    /// Attaches zero or more children to a `Div`. This method accepts anything which can be turned
+    /// into an iterator of `BodyNode`'s (i.e. most tags that you would expect to be able to use).
+    ///
     /// ```
     /// # use malvolio::prelude::*;
     /// Div::new()
@@ -44,6 +43,18 @@ impl Div {
     ///         H1::new(format!("Item {}", item))
     ///     }));
     /// ```
+    ///
+    /// ```
+    /// # use malvolio::prelude::*;
+    /// div()
+    ///    .children(vec![1, 2, 3, 4, 5].into_iter().map(|item| {
+    ///         if item % 2 == 0 {
+    ///             BodyNode::from(h1(format!("Item {}, as h1", item)))
+    ///         } else {
+    ///             BodyNode::from(h2(format!("Item {}, as h2", item)))
+    ///         }
+    ///    }));
+    ///
     pub fn children<C, D>(mut self, children: C) -> Self
     where
         C: IntoIterator<Item = D>,
@@ -53,6 +64,7 @@ impl Div {
             .extend(children.into_iter().map(Into::into).collect::<Vec<_>>());
         self
     }
+
     /// Add a single child to the `Div` in question.
     pub fn child<C>(mut self, child: C) -> Self
     where
@@ -61,10 +73,12 @@ impl Div {
         self.children.push(child.into());
         self
     }
-    /// Allows you to apply a custom function to this `Div` this is useful, for example if you want
-    /// to conditionally add a node by capturing a variable from the environment.
+
+    /// Allows you to apply a custom function to this `Div`. This function is useful if you want to
+    /// modify this tag according to some state captured from the environment.
     ///
-    /// An example of a pattern this could be used for is given below:
+    /// For example:
+    ///
     /// ```
     /// # use malvolio::prelude::*;
     /// let a_items: Vec<H1> = vec![];
@@ -88,7 +102,9 @@ impl Div {
         self = mapping(self);
         self
     }
-    /// Add a single attribute to a `Div`.
+
+    /// Attach a single attribute to a `Div`. This will overwrite the existing attribute, if it has
+    /// already been defined.
     pub fn attribute<A>(mut self, attribute: A) -> Self
     where
         A: Into<DivAttr>,
@@ -100,13 +116,15 @@ impl Div {
 
     crate::define_raw_attribute_fn!();
 
-    /// Read an attribute that has been set
+    /// Read an attribute set on this function.
     pub fn read_attribute(&self, attribute: &'static str) -> Option<&Cow<'static, str>> {
         self.attrs.get(attribute)
     }
+
     /// Attach a new `H1` instance to this class. Note that this method only allows you to provide
-    /// text, and no additional attributes. If you want to specify extra attributes, you should
-    /// instead use the "child" method (see the documentation of that method for more details).
+    /// text (you cannot pass extra attributes to the `<h1>` tag). If you want to specify additional
+    /// attributes, you should instead use the "child" method (see the documentation of that method
+    /// for more details).
     ///
     /// ```rust
     /// # use malvolio::prelude::*;
@@ -126,9 +144,11 @@ impl Div {
     {
         self.child(c.into())
     }
+
     /// Attach a new `H2` instance to this class. Note that this method only allows you to provide
-    /// text, and no additional attributes. If you want to specify extra attributes, you should
-    /// instead use the "child" method (see the documentation of that method for more details).
+    /// text (you cannot pass extra attributes to the `<h1>` tag). If you want to specify additional
+    /// attributes, you should instead use the "child" method (see the documentation of that method
+    /// for more details).
     ///
     /// ```rust
     /// # use malvolio::prelude::*;
@@ -148,9 +168,11 @@ impl Div {
     {
         self.child(c.into())
     }
+
     /// Attach a new `H3` instance to this class. Note that this method only allows you to provide
-    /// text, and no additional attributes. If you want to specify extra attributes, you should
-    /// instead use the "child" method (see the documentation of that method for more details).
+    /// text (you cannot pass extra attributes to the `<h1>` tag). If you want to specify additional
+    /// attributes, you should instead use the "child" method (see the documentation of that method
+    /// for more details).
     ///
     /// ```rust
     /// # use malvolio::prelude::*;
@@ -171,8 +193,9 @@ impl Div {
         self.child(c.into())
     }
     /// Attach a new `H4` instance to this class. Note that this method only allows you to provide
-    /// text, and no additional attributes. If you want to specify extra attributes, you should
-    /// instead use the "child" method (see the documentation of that method for more details).
+    /// text (you cannot pass extra attributes to the `<h1>` tag). If you want to specify additional
+    /// attributes, you should instead use the "child" method (see the documentation of that method
+    /// for more details).
     ///
     /// ```rust
     /// # use malvolio::prelude::*;
@@ -193,8 +216,9 @@ impl Div {
         self.child(c.into())
     }
     /// Attach a new `H5` instance to this class. Note that this method only allows you to provide
-    /// text, and no additional attributes. If you want to specify extra attributes, you should
-    /// instead use the "child" method (see the documentation of that method for more details).
+    /// text (you cannot pass extra attributes to the `<h1>` tag). If you want to specify additional
+    /// attributes, you should instead use the "child" method (see the documentation of that method
+    /// for more details).
     ///
     /// ```rust
     /// # use malvolio::prelude::*;
@@ -215,8 +239,9 @@ impl Div {
         self.child(c.into())
     }
     /// Attach a new `H6` instance to this class. Note that this method only allows you to provide
-    /// text, and no additional attributes. If you want to specify extra attributes, you should
-    /// instead use the "child" method (see the documentation of that method for more details).
+    /// text (you cannot pass extra attributes to the `<h1>` tag). If you want to specify additional
+    /// attributes, you should instead use the "child" method (see the documentation of that method
+    /// for more details).
     ///
     /// ```rust
     /// # use malvolio::prelude::*;
@@ -257,6 +282,7 @@ impl Display for Div {
         f.write_str("</div>")
     }
 }
+
 into_grouping_union!(Div, BodyNode);
 
 utility_enum!(
@@ -325,7 +351,6 @@ mod tests {
         let document = Div::default()
             .children(vec!["1", "2", "3"].into_iter().map(P::with_text))
             .to_string();
-        dbg!(&document);
         let document = scraper::Html::parse_document(&document);
         let div_selector = scraper::Selector::parse("div").unwrap();
         let div = document.select(&div_selector).next().unwrap();
