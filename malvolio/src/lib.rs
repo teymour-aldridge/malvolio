@@ -10,11 +10,6 @@ A copy of this license can be found in the `licenses` directory at the root of t
 //! programs, most of these use macros; Malvolio's API avoids trying to escape confines of the
 //! language by jumping out the macro "escape hatch".
 //!
-//! Malvolio is "isomorphic" (you can use it both on servers and in browsers – Malvolio integrates
-//! with Yew in order to work inside browsers). If you'd like to use Yew, you'll need to activate
-//! the "with_yew" feature. If you activate the "with_rocket" feature, Rocket's `Responder` trait is
-//! implemented for `Html`, so you can return the `Html` type from routes.
-//!
 //! Although in early stages, Malvolio works and is suitable for general use. There are likely to be
 //! quite a few API breakages, however.
 //!
@@ -26,9 +21,7 @@ A copy of this license can be found in the `licenses` directory at the root of t
 //!
 //! Most of the important things are re-exported from `prelude`. If you're burning to try Malvolio
 //! out, adding `use malvolio::prelude::*;` will import all the HTML tags that Malvolio supports
-//! – after that you should be good to go! If you run into problems feel free to reach out for help.
-//! The best place to do this at the moment is the Yew Discord server (a link to this can be found
-//! on the [Yew website](https://yew.rs))
+//! – after that you should be good to go!
 //!
 //! Note that although Malvolio *should* support all of the HTML specification, it might be missing
 //! a few pieces – if you spot somethng missing please
@@ -36,8 +29,7 @@ A copy of this license can be found in the `licenses` directory at the root of t
 //! full specification.
 //!
 //! Internally, most things are in the `tag` module, although some common attributes are in the
-//! `attributes` module. Some extra items which are only available when the "with_yew" feature is
-//! enabled can be found in the `vnode` modules, but these are not exported publically.
+//! `attributes` module.
 //!
 //! # CSS support
 //!
@@ -56,8 +48,8 @@ A copy of this license can be found in the `licenses` directory at the root of t
 //! # Contributing
 //!
 //! We welcome contributions, issues, concerns and suggestions (if you just want to chat, join us in
-//! the #malvolio channel on the [Yew Discord server](https://discord.gg/VQck8X4))! Malvolio's
-//! source code is located in our [Github repository](https://github.com/bailion/malvolio).
+//! Malvolio's source code is located in our
+//! [Github repository](https://github.com/bailion/malvolio).
 
 #![deny(missing_docs, missing_debug_implementations)]
 
@@ -77,9 +69,6 @@ pub mod prelude;
 pub mod tags;
 /// A text node.
 pub mod text;
-
-#[cfg(all(feature = "with_yew", not(feature = "strategies")))]
-pub(crate) mod vnode;
 
 #[macro_use]
 #[doc(hidden)]

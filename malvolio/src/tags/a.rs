@@ -239,34 +239,6 @@ impl IntoAttribute for Target {
         )
     }
 }
-
-#[cfg(all(feature = "with_yew", not(feature = "strategies")))]
-mod vnode_impls {
-    use yew::virtual_dom::{VTag, VText};
-
-    use super::*;
-
-    use crate::vnode::IntoVNode;
-
-    impl IntoVNode for A {
-        fn into_vnode(self) -> yew::virtual_dom::VNode {
-            let mut tag = VTag::new("a");
-
-            for (key, value) in self.attrs {
-                if let Cow::Borrowed(key) = key {
-                    tag.add_attribute(key, value);
-                } else {
-                    panic!("Dynamic Yew attributes are not yet supported.")
-                }
-            }
-
-            tag.add_child(VText::new(self.text).into());
-
-            tag.into()
-        }
-    }
-}
-
 #[cfg(test)]
 mod test {
     use crate::prelude::*;

@@ -25,15 +25,6 @@ heading_display!(Label);
 
 into_grouping_union!(Label, BodyNode);
 
-#[cfg(all(feature = "with_yew", not(feature = "strategies")))]
-mod vnode_impls {
-    use crate::heading_of_vnode;
-
-    use super::*;
-
-    heading_of_vnode!(Label);
-}
-
 #[cfg(test)]
 mod test {
     use crate::prelude::*;

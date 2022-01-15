@@ -1,6 +1,3 @@
-#[cfg(all(feature = "with_yew", not(feature = "strategies")))]
-use yew::virtual_dom::VNode;
-
 /*
 This source code file is distributed subject to the terms of the Mozilla Public License v2.0.
 A copy of this license can be found in the `licenses` directory at the root of this project.
@@ -45,8 +42,6 @@ utility_enum!(
         Select(Select),
         NoScript(NoScript),
         Img(Img),
-        #[cfg(all(feature = "with_yew", not(feature = "strategies")))]
-        VNode(VNode),
     }
 );
 
@@ -54,35 +49,3 @@ enum_display!(
     BodyNode, H1, H2, H3, H4, H5, H6, P, Br, Text, Form, Div, A, Input, Select, NoScript, Img,
     Label
 );
-
-#[cfg(all(feature = "with_yew", not(feature = "strategies")))]
-mod vnode_impls {
-    use crate::vnode::IntoVNode;
-
-    use super::*;
-
-    impl IntoVNode for BodyNode {
-        fn into_vnode(self) -> VNode {
-            match self {
-                BodyNode::H1(h) => h.into_vnode(),
-                BodyNode::H2(h) => h.into_vnode(),
-                BodyNode::H3(h) => h.into_vnode(),
-                BodyNode::H4(h) => h.into_vnode(),
-                BodyNode::H5(h) => h.into_vnode(),
-                BodyNode::H6(h) => h.into_vnode(),
-                BodyNode::P(p) => p.into_vnode(),
-                BodyNode::Text(t) => t.into_vnode(),
-                BodyNode::Form(f) => f.into_vnode(),
-                BodyNode::Br(b) => b.into_vnode(),
-                BodyNode::Div(d) => d.into_vnode(),
-                BodyNode::A(a) => a.into_vnode(),
-                BodyNode::Input(i) => i.into_vnode(),
-                BodyNode::Label(l) => l.into_vnode(),
-                BodyNode::Select(s) => s.into_vnode(),
-                BodyNode::NoScript(n) => n.into_vnode(),
-                BodyNode::Img(i) => i.into_vnode(),
-                BodyNode::VNode(v) => v,
-            }
-        }
-    }
-}

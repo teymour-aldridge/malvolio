@@ -5,22 +5,11 @@ A copy of this license can be found in the `licenses` directory at the root of t
 use std::fmt::Display;
 
 use super::{body::Body, head::Head};
-#[cfg(feature = "with_rocket")]
-use rocket::http::Status;
-#[cfg(feature = "with_rocket")]
-use rocket::{response::Responder, Response};
-#[cfg(feature = "with_rocket")]
-use std::io::Cursor;
 
 #[derive(Clone, Debug)]
 #[cfg_attr(feature = "pub_fields", derive(FieldsAccessibleVariant))]
 /// Construct a HTML document. If you are trying to render to a string, this is what you want to use.
-///
-/// If you're using Yew (enable the `with_yew` feature in your `Cargo.toml` to do this) then you
-/// probably want to use the relevant tag which your component should return instead.
 pub struct Html {
-    #[cfg(feature = "with_rocket")]
-    status: Status,
     head: Head,
     body: Body,
 }
@@ -33,8 +22,6 @@ pub fn html() -> Html {
 impl Default for Html {
     fn default() -> Self {
         Self {
-            #[cfg(feature = "with_rocket")]
-            status: Status::Ok,
             head: Head::default(),
             body: Body::default(),
         }
@@ -49,17 +36,6 @@ impl Display for Html {
         self.body.fmt(f)?;
         f.write_str("</html>")?;
         Ok(())
-    }
-}
-
-#[cfg(feature = "with_rocket")]
-impl<'r, 'o: 'r> Responder<'r, 'o> for Html {
-    fn respond_to(self, _: &rocket::Request) -> rocket::response::Result<'o> {
-        Response::build()
-            .status(self.status)
-            .raw_header("Content-Type", "text/html")
-            .streamed_body(Cursor::new(self.to_string()))
-            .ok()
     }
 }
 
@@ -79,14 +55,6 @@ impl Html {
     /// Attach a new <body> tag to this `Html` instance.
     pub fn body(mut self, body: Body) -> Self {
         self.body = body;
-        self
-    }
-
-    #[cfg(feature = "with_rocket")]
-    /// Add the corresponding status code to return this HTML document with. Note that this is only
-    /// available if you have enabled the `with_rocket` feature.
-    pub fn status(mut self, status: Status) -> Self {
-        self.status = status;
         self
     }
 }

@@ -36,20 +36,3 @@ impl Display for StyleTag {
 }
 
 into_grouping_union!(StyleTag, HeadNode);
-
-#[cfg(all(feature = "with_yew", not(feature = "strategies")))]
-mod vnode_impls {
-    use yew::virtual_dom::{VTag, VText};
-
-    use crate::vnode::IntoVNode;
-
-    use super::*;
-
-    impl IntoVNode for StyleTag {
-        fn into_vnode(self) -> yew::virtual_dom::VNode {
-            let mut tag = VTag::new("input");
-            tag.add_child(VText::new(self.text).into());
-            tag.into()
-        }
-    }
-}

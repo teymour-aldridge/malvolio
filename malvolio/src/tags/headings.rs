@@ -13,20 +13,6 @@ use crate::{
 
 use super::body::body_node::BodyNode;
 
-#[cfg(all(feature = "with_yew", not(feature = "strategies")))]
-mod vnode_impls {
-    use super::*;
-
-    use crate::heading_of_vnode;
-
-    heading_of_vnode!(H1);
-    heading_of_vnode!(H2);
-    heading_of_vnode!(H3);
-    heading_of_vnode!(H4);
-    heading_of_vnode!(H5);
-    heading_of_vnode!(H6);
-}
-
 #[derive(Default, Debug, Clone)]
 #[cfg_attr(feature = "pub_fields", derive(FieldsAccessibleVariant))]
 /// The <h1> tag.

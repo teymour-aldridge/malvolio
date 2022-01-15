@@ -347,32 +347,6 @@ impl IntoAttribute for Action {
     }
 }
 
-#[cfg(all(feature = "with_yew", not(feature = "strategies")))]
-mod vnode_impls {
-    use yew::virtual_dom::VTag;
-
-    use crate::vnode::IntoVNode;
-
-    use super::*;
-
-    impl IntoVNode for Form {
-        fn into_vnode(self) -> yew::virtual_dom::VNode {
-            let mut tag = VTag::new("form");
-            for (key, value) in self.attrs {
-                if let Cow::Borrowed(key) = key {
-                    tag.add_attribute(key, value);
-                } else {
-                    panic!("Yew dynamic tags are not yet supported.")
-                }
-            }
-            for child in self.children {
-                tag.add_child(child.into_vnode());
-            }
-            tag.into()
-        }
-    }
-}
-
 #[cfg(test)]
 mod test_form {
     use crate::{
