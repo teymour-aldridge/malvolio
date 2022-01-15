@@ -19,7 +19,6 @@ use super::body::body_node::BodyNode;
 ///
 /// See the [MDN Web Docs](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/br) for more
 /// info.
-#[cfg_attr(feature = "with_proptest", derive(Arbitrary))]
 pub struct Br;
 
 impl Display for Br {

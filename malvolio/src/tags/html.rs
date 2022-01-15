@@ -5,11 +5,11 @@ A copy of this license can be found in the `licenses` directory at the root of t
 use std::fmt::Display;
 
 use super::{body::Body, head::Head};
-#[cfg(all(feature = "with_rocket", not(feature = "with_proptest")))]
+#[cfg(feature = "with_rocket")]
 use rocket::http::Status;
-#[cfg(all(feature = "with_rocket", not(feature = "with_proptest")))]
+#[cfg(feature = "with_rocket")]
 use rocket::{response::Responder, Response};
-#[cfg(all(feature = "with_rocket", not(feature = "with_proptest")))]
+#[cfg(feature = "with_rocket")]
 use std::io::Cursor;
 
 #[derive(Clone, Debug)]
@@ -19,7 +19,7 @@ use std::io::Cursor;
 /// If you're using Yew (enable the `with_yew` feature in your `Cargo.toml` to do this) then you
 /// probably want to use the relevant tag which your component should return instead.
 pub struct Html {
-    #[cfg(all(feature = "with_rocket", not(feature = "with_proptest")))]
+    #[cfg(feature = "with_rocket")]
     status: Status,
     head: Head,
     body: Body,
@@ -33,7 +33,7 @@ pub fn html() -> Html {
 impl Default for Html {
     fn default() -> Self {
         Self {
-            #[cfg(all(feature = "with_rocket", not(feature = "with_proptest")))]
+            #[cfg(feature = "with_rocket")]
             status: Status::Ok,
             head: Head::default(),
             body: Body::default(),
@@ -52,7 +52,7 @@ impl Display for Html {
     }
 }
 
-#[cfg(all(feature = "with_rocket", not(feature = "with_proptest")))]
+#[cfg(feature = "with_rocket")]
 impl<'r, 'o: 'r> Responder<'r, 'o> for Html {
     fn respond_to(self, _: &rocket::Request) -> rocket::response::Result<'o> {
         Response::build()
@@ -82,7 +82,7 @@ impl Html {
         self
     }
 
-    #[cfg(all(feature = "with_rocket", not(feature = "with_proptest")))]
+    #[cfg(feature = "with_rocket")]
     /// Add the corresponding status code to return this HTML document with. Note that this is only
     /// available if you have enabled the `with_rocket` feature.
     pub fn status(mut self, status: Status) -> Self {

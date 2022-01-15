@@ -16,7 +16,6 @@ use crate::tags::body::body_node::BodyNode;
 #[derive(Debug, Clone, Derivative)]
 #[derivative(Default(new = "true"))]
 #[cfg_attr(feature = "pub_fields", derive(FieldsAccessibleVariant))]
-#[cfg_attr(feature = "with_proptest", derive(Arbitrary))]
 /// A HTML form. You can create a form with `Form::new()` or `Form::default()` (they are identical)
 /// and then use any of the provided methods to manipulate it (for example adding child elements or
 /// attributes).

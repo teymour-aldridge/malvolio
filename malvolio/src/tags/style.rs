@@ -8,7 +8,6 @@ use std::{borrow::Cow, fmt::Display};
 /// further information.
 #[derive(Debug, Clone)]
 #[cfg_attr(feature = "pub_fields", derive(FieldsAccessibleVariant))]
-#[cfg_attr(feature = "with_proptest", derive(Arbitrary))]
 pub struct StyleTag {
     text: Cow<'static, str>,
 }
