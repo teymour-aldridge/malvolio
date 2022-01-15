@@ -19,7 +19,6 @@ use super::{body::body_node::BodyNode, input::Name, option::SelectOption};
 #[derive(Derivative, Debug, Clone)]
 #[derivative(Default(new = "true"))]
 #[cfg_attr(feature = "pub_fields", derive(FieldsAccessibleVariant))]
-#[cfg_attr(feature = "with_proptest", derive(Arbitrary))]
 /// The `select` tag.
 ///
 /// See [MDN's page on this](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/select) for

@@ -10,7 +10,6 @@ use crate::{heading_display, impl_of_heading_new_fn, into_grouping_union};
 
 #[derive(Debug, Clone)]
 #[cfg_attr(feature = "pub_fields", derive(FieldsAccessibleVariant))]
-#[cfg_attr(feature = "with_proptest", derive(Arbitrary))]
 /// A label for a form.
 ///
 /// See the [MDN Web Docs](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/label)

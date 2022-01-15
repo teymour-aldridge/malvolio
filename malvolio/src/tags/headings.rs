@@ -29,7 +29,6 @@ mod vnode_impls {
 
 #[derive(Default, Debug, Clone)]
 #[cfg_attr(feature = "pub_fields", derive(FieldsAccessibleVariant))]
-#[cfg_attr(feature = "with_proptest", derive(Arbitrary))]
 /// The <h1> tag.
 ///
 /// See
@@ -37,10 +36,6 @@ mod vnode_impls {
 /// for further information.
 pub struct H1 {
     text: Cow<'static, str>,
-    #[cfg_attr(
-        feature = "with_proptest",
-        proptest(strategy = "crate::strategies::hashmap_strategy()")
-    )]
     attrs: HashMap<Cow<'static, str>, Cow<'static, str>>,
 }
 
@@ -52,7 +47,6 @@ heading_display!(H1);
 
 #[derive(Default, Debug, Clone)]
 #[cfg_attr(feature = "pub_fields", derive(FieldsAccessibleVariant))]
-#[cfg_attr(feature = "with_proptest", derive(Arbitrary))]
 /// The <h2> tag.
 ///
 /// See
@@ -60,10 +54,6 @@ heading_display!(H1);
 /// for further information.
 pub struct H2 {
     text: Cow<'static, str>,
-    #[cfg_attr(
-        feature = "with_proptest",
-        proptest(strategy = "crate::strategies::hashmap_strategy()")
-    )]
     attrs: HashMap<Cow<'static, str>, Cow<'static, str>>,
 }
 
@@ -75,7 +65,6 @@ heading_display!(H2);
 
 #[derive(Default, Debug, Clone)]
 #[cfg_attr(feature = "pub_fields", derive(FieldsAccessibleVariant))]
-#[cfg_attr(feature = "with_proptest", derive(Arbitrary))]
 /// The <h3> tag.
 ///
 /// See
@@ -83,10 +72,6 @@ heading_display!(H2);
 /// for further information.
 pub struct H3 {
     text: Cow<'static, str>,
-    #[cfg_attr(
-        feature = "with_proptest",
-        proptest(strategy = "crate::strategies::hashmap_strategy()")
-    )]
     attrs: HashMap<Cow<'static, str>, Cow<'static, str>>,
 }
 
@@ -98,7 +83,6 @@ heading_display!(H3);
 
 #[derive(Default, Debug, Clone)]
 #[cfg_attr(feature = "pub_fields", derive(FieldsAccessibleVariant))]
-#[cfg_attr(feature = "with_proptest", derive(Arbitrary))]
 /// The <h4> tag.
 ///
 /// See
@@ -106,10 +90,6 @@ heading_display!(H3);
 /// for further information.
 pub struct H4 {
     text: Cow<'static, str>,
-    #[cfg_attr(
-        feature = "with_proptest",
-        proptest(strategy = "crate::strategies::hashmap_strategy()")
-    )]
     attrs: HashMap<Cow<'static, str>, Cow<'static, str>>,
 }
 
@@ -121,7 +101,6 @@ heading_display!(H4);
 
 #[derive(Default, Debug, Clone)]
 #[cfg_attr(feature = "pub_fields", derive(FieldsAccessibleVariant))]
-#[cfg_attr(feature = "with_proptest", derive(Arbitrary))]
 /// The <h5> tag.
 ///
 /// See
@@ -129,10 +108,6 @@ heading_display!(H4);
 /// for further information.
 pub struct H5 {
     text: Cow<'static, str>,
-    #[cfg_attr(
-        feature = "with_proptest",
-        proptest(strategy = "crate::strategies::hashmap_strategy()")
-    )]
     attrs: HashMap<Cow<'static, str>, Cow<'static, str>>,
 }
 
@@ -144,7 +119,6 @@ heading_display!(H5);
 
 #[derive(Default, Debug, Clone)]
 #[cfg_attr(feature = "pub_fields", derive(FieldsAccessibleVariant))]
-#[cfg_attr(feature = "with_proptest", derive(Arbitrary))]
 /// The <h6> tag.
 ///
 /// See
@@ -152,10 +126,6 @@ heading_display!(H5);
 /// for further information.
 pub struct H6 {
     text: Cow<'static, str>,
-    #[cfg_attr(
-        feature = "with_proptest",
-        proptest(strategy = "crate::strategies::hashmap_strategy()")
-    )]
     attrs: HashMap<Cow<'static, str>, Cow<'static, str>>,
 }
 

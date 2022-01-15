@@ -5,7 +5,6 @@ use crate::into_grouping_union;
 
 #[derive(Debug, Clone)]
 #[cfg_attr(feature = "pub_fields", derive(FieldsAccessibleVariant))]
-#[cfg_attr(feature = "with_proptest", derive(Arbitrary))]
 /// The <noscript> tag. The contents of this tag will be shown to people whose browsers don't
 /// support Javascript, or who don't have Javascript enabled.
 ///

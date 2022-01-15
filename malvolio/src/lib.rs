@@ -68,14 +68,6 @@ extern crate derivative;
 #[macro_use]
 extern crate malvolio_codegen;
 
-#[cfg(feature = "with_proptest")]
-#[macro_use]
-extern crate proptest_derive;
-
-#[cfg(feature = "with_proptest")]
-#[macro_use]
-pub(crate) mod strategies;
-
 /// Attributes which can be attached to multiple nodes.
 pub mod attributes;
 /// A list of types which are useful for using the library. Unless you have name conflicts, we

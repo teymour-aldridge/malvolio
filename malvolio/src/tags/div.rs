@@ -17,7 +17,6 @@ use super::body::body_node::BodyNode;
 #[derive(Debug, Derivative, Clone)]
 #[derivative(Default(new = "true"))]
 #[cfg_attr(feature = "pub_fields", derive(FieldsAccessibleVariant))]
-#[cfg_attr(feature = "with_proptest", derive(Arbitrary))]
 /// A `<div>` tag.
 ///
 /// See the [MDN Web Docs](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/div)

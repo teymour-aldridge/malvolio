@@ -13,7 +13,6 @@ use super::head::head_node::HeadNode;
 #[derive(Derivative, Debug, Clone)]
 #[derivative(Default(new = "true"))]
 #[cfg_attr(feature = "pub_fields", derive(FieldsAccessibleVariant))]
-#[cfg_attr(feature = "with_proptest", derive(Arbitrary))]
 /// A metadata element. Useful for adding metadata which can not be represented through other HTML
 /// tags.
 ///

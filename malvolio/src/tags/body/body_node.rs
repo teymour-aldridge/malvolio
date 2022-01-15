@@ -55,58 +55,6 @@ enum_display!(
     Label
 );
 
-#[cfg(feature = "with_proptest")]
-pub(crate) mod body_proptest {
-    use super::*;
-
-    use proptest::prelude::*;
-
-    /// Creates `BodyNode`s, useful for testing.
-    pub(crate) fn body_node(
-        depth: u32,
-        desired_size: u32,
-        expected_branch_size: u32,
-    ) -> BoxedStrategy<BodyNode> {
-        let leaf = prop_oneof![
-            any::<H1>().prop_map(BodyNode::H1),
-            any::<H2>().prop_map(BodyNode::H2),
-            any::<H3>().prop_map(BodyNode::H3),
-            any::<H4>().prop_map(BodyNode::H4),
-            any::<H5>().prop_map(BodyNode::H5),
-            any::<H6>().prop_map(BodyNode::H6),
-            any::<Br>().prop_map(BodyNode::Br),
-            any::<A>().prop_map(BodyNode::A),
-            any::<Input>().prop_map(BodyNode::Input),
-            any::<Label>().prop_map(BodyNode::Label),
-            any::<Select>().prop_map(BodyNode::Select),
-            any::<NoScript>().prop_map(BodyNode::NoScript),
-            any::<Img>().prop_map(BodyNode::Img)
-        ];
-
-        leaf.prop_recursive(depth, desired_size, expected_branch_size, |inner| {
-            prop_oneof![
-                prop::collection::vec(inner.clone(), 0..10)
-                    .prop_map(|prop| { BodyNode::Div(Div::default().children(prop)) }),
-                prop::collection::vec(inner.clone(), 0..10)
-                    .prop_map(|item| { BodyNode::P(P::default().children(item)) }),
-                prop::collection::vec(inner, 0..10)
-                    .prop_map(|item| { BodyNode::Form(Form::default().children(item)) })
-            ]
-        })
-        .boxed()
-    }
-
-    impl Arbitrary for BodyNode {
-        type Parameters = (u32, u32, u32);
-        type Strategy = BoxedStrategy<BodyNode>;
-
-        fn arbitrary_with(params: Self::Parameters) -> Self::Strategy {
-            let (depth, desired_size, expected_branch_size) = params;
-            body_node(depth, desired_size, expected_branch_size)
-        }
-    }
-}
-
 #[cfg(all(feature = "with_yew", not(feature = "strategies")))]
 mod vnode_impls {
     use crate::vnode::IntoVNode;
