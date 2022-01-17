@@ -4,10 +4,14 @@ A copy of this license can be found in the `licenses` directory at the root of t
 */
 use std::{borrow::Cow, collections::HashMap, fmt::Display};
 
-use crate::{impl_of_heading_new_fn, into_grouping_union, tags::body::body_node::BodyNode};
+use crate::{
+    impl_of_heading_mutator, impl_of_heading_new_fn, into_grouping_union,
+    tags::body::body_node::BodyNode,
+};
 
 #[derive(Default, Debug, Clone)]
 #[cfg_attr(feature = "pub_fields", derive(FieldsAccessibleVariant))]
+#[cfg_attr(feature = "fuzz", derive(serde::Serialize, serde::Deserialize))]
 
 /// A text node.
 pub struct Text {
@@ -16,6 +20,8 @@ pub struct Text {
 }
 
 impl_of_heading_new_fn!(Text, text);
+
+impl_of_heading_mutator!(Text);
 
 into_grouping_union!(Text, BodyNode);
 

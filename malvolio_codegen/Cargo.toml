@@ -1,7 +1,7 @@
 [package]
 name = "malvolio_codegen"
 version = "0.1.0"
-authors = ["Teymour Aldridge <teymour.aldridge@icloud.com>"]
+authors = ["Teymour Aldridge <notifications@reasoning.page>"]
 description = "codegen for `malvolio`"
 license = "MPL-2.0"
 edition = "2018"

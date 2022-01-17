@@ -6,7 +6,8 @@ A copy of this license can be found in the `licenses` directory at the root of t
 use std::{borrow::Cow, collections::HashMap};
 
 use crate::{
-    heading_display, impl_of_heading_new_fn, into_attribute_for_grouping_enum, into_grouping_union,
+    heading_display, impl_of_heading_mutator, impl_of_heading_new_fn,
+    into_attribute_for_grouping_enum, into_grouping_union,
     prelude::{Class, Id, Style},
     utility_enum,
 };
@@ -15,6 +16,7 @@ use super::body::body_node::BodyNode;
 
 #[derive(Default, Debug, Clone)]
 #[cfg_attr(feature = "pub_fields", derive(FieldsAccessibleVariant))]
+#[cfg_attr(feature = "fuzz", derive(serde::Serialize, serde::Deserialize))]
 /// The <h1> tag.
 ///
 /// See
@@ -27,12 +29,15 @@ pub struct H1 {
 
 impl_of_heading_new_fn!(H1, h1);
 
+impl_of_heading_mutator!(H1);
+
 into_grouping_union!(H1, BodyNode);
 
 heading_display!(H1);
 
 #[derive(Default, Debug, Clone)]
 #[cfg_attr(feature = "pub_fields", derive(FieldsAccessibleVariant))]
+#[cfg_attr(feature = "fuzz", derive(serde::Serialize, serde::Deserialize))]
 /// The <h2> tag.
 ///
 /// See
@@ -45,12 +50,15 @@ pub struct H2 {
 
 impl_of_heading_new_fn!(H2, h2);
 
+impl_of_heading_mutator!(H2);
+
 into_grouping_union!(H2, BodyNode);
 
 heading_display!(H2);
 
 #[derive(Default, Debug, Clone)]
 #[cfg_attr(feature = "pub_fields", derive(FieldsAccessibleVariant))]
+#[cfg_attr(feature = "fuzz", derive(serde::Serialize, serde::Deserialize))]
 /// The <h3> tag.
 ///
 /// See
@@ -63,12 +71,15 @@ pub struct H3 {
 
 impl_of_heading_new_fn!(H3, h3);
 
+impl_of_heading_mutator!(H3);
+
 into_grouping_union!(H3, BodyNode);
 
 heading_display!(H3);
 
 #[derive(Default, Debug, Clone)]
 #[cfg_attr(feature = "pub_fields", derive(FieldsAccessibleVariant))]
+#[cfg_attr(feature = "fuzz", derive(serde::Serialize, serde::Deserialize))]
 /// The <h4> tag.
 ///
 /// See
@@ -81,12 +92,15 @@ pub struct H4 {
 
 impl_of_heading_new_fn!(H4, h4);
 
+impl_of_heading_mutator!(H4);
+
 into_grouping_union!(H4, BodyNode);
 
 heading_display!(H4);
 
 #[derive(Default, Debug, Clone)]
 #[cfg_attr(feature = "pub_fields", derive(FieldsAccessibleVariant))]
+#[cfg_attr(feature = "fuzz", derive(serde::Serialize, serde::Deserialize))]
 /// The <h5> tag.
 ///
 /// See
@@ -99,12 +113,15 @@ pub struct H5 {
 
 impl_of_heading_new_fn!(H5, h5);
 
+impl_of_heading_mutator!(H5);
+
 into_grouping_union!(H5, BodyNode);
 
 heading_display!(H5);
 
 #[derive(Default, Debug, Clone)]
 #[cfg_attr(feature = "pub_fields", derive(FieldsAccessibleVariant))]
+#[cfg_attr(feature = "fuzz", derive(serde::Serialize, serde::Deserialize))]
 /// The <h6> tag.
 ///
 /// See
@@ -116,6 +133,8 @@ pub struct H6 {
 }
 
 impl_of_heading_new_fn!(H6, h6);
+
+impl_of_heading_mutator!(H6);
 
 into_grouping_union!(H6, BodyNode);
 

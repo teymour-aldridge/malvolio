@@ -7,9 +7,39 @@ use crate::{
 #[derive(Debug, Derivative, Clone)]
 #[derivative(Default(new = "true"))]
 #[cfg_attr(feature = "pub_fields", derive(FieldsAccessibleVariant))]
+#[cfg_attr(feature = "fuzz", derive(serde::Serialize, serde::Deserialize))]
 /// The `<img>` tag.
 pub struct Img {
     attrs: HashMap<Cow<'static, str>, Cow<'static, str>>,
+}
+
+#[cfg(feature = "fuzz")]
+#[cfg_attr(feature = "fuzz", no_coverage)]
+mod div_mutator {
+    use fuzzcheck::{mutators::map::MapMutator, DefaultMutator, Mutator};
+
+    use super::Img;
+
+    impl Img {
+        fn mutator() -> impl Mutator<Img> {
+            MapMutator::new(
+                crate::mutators::attr_mutator(),
+                |img: &Img| Some(img.attrs.clone()),
+                |attrs| Img {
+                    attrs: attrs.clone(),
+                },
+                |_, c| c,
+            )
+        }
+    }
+
+    impl DefaultMutator for Img {
+        type Mutator = impl Mutator<Img>;
+
+        fn default_mutator() -> Self::Mutator {
+            Img::mutator()
+        }
+    }
 }
 
 /// Creates a new `Img` tag – functionally equivalent to `Img::new()` (but easier to type.)

@@ -5,9 +5,9 @@ A copy of this license can be found in the `licenses` directory at the root of t
 
 use crate::{
     attributes::IntoAttribute,
-    into_attribute_for_grouping_enum, into_grouping_union,
+    impl_of_heading_mutator, into_attribute_for_grouping_enum, into_grouping_union,
     prelude::{Id, Style},
-    to_html, utility_enum,
+    utility_enum,
 };
 use ammonia::clean;
 use std::{borrow::Cow, collections::HashMap, fmt::Display};
@@ -28,10 +28,13 @@ use super::body::body_node::BodyNode;
 #[derive(Debug, Clone, Derivative)]
 #[derivative(Default(new = "true"))]
 #[cfg_attr(feature = "pub_fields", derive(FieldsAccessibleVariant))]
+#[cfg_attr(feature = "fuzz", derive(serde::Serialize, serde::Deserialize))]
 pub struct A {
     attrs: HashMap<Cow<'static, str>, Cow<'static, str>>,
     text: Cow<'static, str>,
 }
+
+impl_of_heading_mutator!(A);
 
 /// Creates a new `A` tag – functionally equivalent to `A::new()` (but easier to type.)
 pub fn a() -> A {
@@ -123,8 +126,6 @@ impl A {
     pub fn read_attribute(&self, attribute: &'static str) -> Option<&Cow<'static, str>> {
         self.attrs.get(attribute)
     }
-
-    to_html!();
 }
 
 impl Display for A {

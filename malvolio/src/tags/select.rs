@@ -19,6 +19,7 @@ use super::{body::body_node::BodyNode, input::Name, option::SelectOption};
 #[derive(Derivative, Debug, Clone)]
 #[derivative(Default(new = "true"))]
 #[cfg_attr(feature = "pub_fields", derive(FieldsAccessibleVariant))]
+#[cfg_attr(feature = "fuzz", derive(serde::Serialize, serde::Deserialize))]
 /// The `select` tag.
 ///
 /// See [MDN's page on this](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/select) for
@@ -26,6 +27,50 @@ use super::{body::body_node::BodyNode, input::Name, option::SelectOption};
 pub struct Select {
     attrs: HashMap<Cow<'static, str>, Cow<'static, str>>,
     children: Vec<SelectOption>,
+}
+
+#[cfg(feature = "fuzz")]
+#[cfg_attr(feature = "fuzz", no_coverage)]
+mod select_mutator {
+    use fuzzcheck::{
+        mutators::{
+            map::MapMutator,
+            tuples::{Tuple2Mutator, TupleMutatorWrapper},
+            vector::VecMutator,
+        },
+        DefaultMutator, Mutator,
+    };
+
+    use crate::tags::option::SelectOption;
+
+    use super::Select;
+
+    impl Select {
+        fn mutator() -> impl Mutator<Select> {
+            let mutator = TupleMutatorWrapper::new(Tuple2Mutator::new(
+                crate::mutators::attr_mutator(),
+                VecMutator::new(SelectOption::default_mutator(), 0..=usize::MAX),
+            ));
+
+            MapMutator::new(
+                mutator,
+                |select: &Select| Some((select.attrs.clone(), select.children.clone())),
+                |(attrs, children)| Select {
+                    children: children.clone(),
+                    attrs: attrs.clone(),
+                },
+                |_, c| c,
+            )
+        }
+    }
+
+    impl DefaultMutator for Select {
+        type Mutator = impl Mutator<Select>;
+
+        fn default_mutator() -> Self::Mutator {
+            Select::mutator()
+        }
+    }
 }
 
 /// Creates a new `Select` tag – functionally equivalent to `Select::new()` (but easier to type.)

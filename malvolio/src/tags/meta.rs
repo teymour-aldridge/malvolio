@@ -13,6 +13,7 @@ use super::head::head_node::HeadNode;
 #[derive(Derivative, Debug, Clone)]
 #[derivative(Default(new = "true"))]
 #[cfg_attr(feature = "pub_fields", derive(FieldsAccessibleVariant))]
+#[cfg_attr(feature = "fuzz", derive(serde::Serialize, serde::Deserialize))]
 /// A metadata element. Useful for adding metadata which can not be represented through other HTML
 /// tags.
 ///
@@ -20,6 +21,29 @@ use super::head::head_node::HeadNode;
 /// further information.
 pub struct Meta {
     attrs: HashMap<Cow<'static, str>, Cow<'static, str>>,
+}
+
+#[cfg(feature = "fuzz")]
+#[cfg_attr(feature = "fuzz", no_coverage)]
+mod meta_mutator {
+    use fuzzcheck::{mutators::map::MapMutator, DefaultMutator, Mutator};
+
+    use super::Meta;
+
+    impl DefaultMutator for Meta {
+        type Mutator = impl Mutator<Meta>;
+
+        fn default_mutator() -> Self::Mutator {
+            MapMutator::new(
+                crate::mutators::attr_mutator(),
+                |meta: &Meta| Some(meta.attrs.clone()),
+                |attrs| Meta {
+                    attrs: attrs.clone(),
+                },
+                |_, c| c,
+            )
+        }
+    }
 }
 
 /// Creates a new `Meta` tag – functionally equivalent to `Meta::new()` (but easier to type.)

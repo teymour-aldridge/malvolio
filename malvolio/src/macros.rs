@@ -32,6 +32,43 @@ macro_rules! heading_display {
 
 #[macro_export]
 #[doc(hidden)]
+macro_rules! impl_of_heading_mutator {
+    ($name:ident) => {
+        #[cfg(feature = "fuzz")]
+        #[cfg_attr(feature = "fuzz", no_coverage)]
+        impl $name {
+            fn mutator() -> impl fuzzcheck::Mutator<$name> {
+                fuzzcheck::mutators::map::MapMutator::new(
+                    fuzzcheck::mutators::tuples::TupleMutatorWrapper::new(
+                        fuzzcheck::mutators::tuples::Tuple2Mutator::new(
+                            crate::mutators::valid_attr_string_mutator::<0>(),
+                            crate::mutators::attr_mutator(),
+                        ),
+                    ),
+                    |h1: &$name| Some((h1.text.to_string(), h1.attrs.clone())),
+                    |(text, attrs)| $name {
+                        text: std::borrow::Cow::Owned(text.clone()),
+                        attrs: attrs.clone(),
+                    },
+                    |_, c| c,
+                )
+            }
+        }
+
+        #[cfg(feature = "fuzz")]
+        #[cfg_attr(feature = "fuzz", no_coverage)]
+        impl fuzzcheck::DefaultMutator for $name {
+            type Mutator = impl fuzzcheck::Mutator<$name>;
+
+            fn default_mutator() -> Self::Mutator {
+                Self::mutator()
+            }
+        }
+    };
+}
+
+#[macro_export]
+#[doc(hidden)]
 /// For internal use only.
 ///
 /// Generates new code to construct a heading.

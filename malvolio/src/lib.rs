@@ -52,6 +52,10 @@ A copy of this license can be found in the `licenses` directory at the root of t
 //! [Github repository](https://github.com/bailion/malvolio).
 
 #![deny(missing_docs, missing_debug_implementations)]
+#![cfg_attr(feature = "fuzz", feature(type_alias_impl_trait, no_coverage))]
+
+#[cfg(all(feature = "fuzz", feature = "pub_fields", test))]
+mod fuzz;
 
 #[macro_use]
 extern crate derivative;
@@ -78,3 +82,6 @@ pub(crate) mod utils;
 #[macro_use]
 #[doc(hidden)]
 pub(crate) mod docs;
+#[cfg(feature = "fuzz")]
+#[cfg_attr(feature = "fuzz", no_coverage)]
+pub(crate) mod mutators;

@@ -2,16 +2,39 @@
 This source code file is distributed subject to the terms of the Mozilla Public License v2.0.
 A copy of this license can be found in the `licenses` directory at the root of this project.
 */
+
+#[allow(missing_docs)]
 use std::fmt::Display;
 
 use super::{body::Body, head::Head};
 
 #[derive(Clone, Debug)]
 #[cfg_attr(feature = "pub_fields", derive(FieldsAccessibleVariant))]
+#[cfg_attr(feature = "fuzz", derive(serde::Serialize, serde::Deserialize))]
 /// Construct a HTML document. If you are trying to render to a string, this is what you want to use.
 pub struct Html {
     head: Head,
     body: Body,
+}
+
+#[cfg(feature = "fuzz")]
+#[cfg_attr(feature = "fuzz", no_coverage)]
+mod html_mutator {
+    use fuzzcheck::make_mutator;
+
+    use crate::tags::{body::Body, head::Head};
+
+    use super::Html;
+
+    make_mutator! {
+        name: HtmlMutator,
+        recursive: false,
+        default: true,
+        type: pub struct Html {
+            head: Head,
+            body: Body,
+        }
+    }
 }
 
 /// Creates a new `Html` tag – functionally equivalent to `Html::new()` (but easier to type.)

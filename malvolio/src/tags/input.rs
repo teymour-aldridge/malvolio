@@ -16,12 +16,42 @@ use super::body::body_node::BodyNode;
 #[derive(Debug, Clone, Derivative)]
 #[derivative(Default(new = "true"))]
 #[cfg_attr(feature = "pub_fields", derive(FieldsAccessibleVariant))]
+#[cfg_attr(feature = "fuzz", derive(serde::Serialize, serde::Deserialize))]
 /// A form input.
 ///
 /// See the [MDN Web Docs](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input)
 /// for further information.
 pub struct Input {
     attrs: HashMap<Cow<'static, str>, Cow<'static, str>>,
+}
+
+#[cfg(feature = "fuzz")]
+#[cfg_attr(feature = "fuzz", no_coverage)]
+mod input_mutator {
+    use fuzzcheck::{mutators::map::MapMutator, DefaultMutator, Mutator};
+
+    use super::Input;
+
+    impl Input {
+        fn mutator() -> impl Mutator<Input> {
+            MapMutator::new(
+                crate::mutators::attr_mutator(),
+                |input: &Input| Some(input.attrs.clone()),
+                |attrs| Input {
+                    attrs: attrs.clone(),
+                },
+                |_, c| c,
+            )
+        }
+    }
+
+    impl DefaultMutator for Input {
+        type Mutator = impl Mutator<Input>;
+
+        fn default_mutator() -> Self::Mutator {
+            Input::mutator()
+        }
+    }
 }
 
 /// Creates a new `Input` tag – functionally equivalent to `Input::new()` (but easier to type.)

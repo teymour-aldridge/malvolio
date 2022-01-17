@@ -5,6 +5,7 @@ use crate::into_grouping_union;
 
 #[derive(Debug, Clone)]
 #[cfg_attr(feature = "pub_fields", derive(FieldsAccessibleVariant))]
+#[cfg_attr(feature = "fuzz", derive(serde::Serialize, serde::Deserialize))]
 /// The <noscript> tag. The contents of this tag will be shown to people whose browsers don't
 /// support Javascript, or who don't have Javascript enabled.
 ///
@@ -12,6 +13,35 @@ use crate::into_grouping_union;
 /// further information.
 pub struct NoScript {
     text: Cow<'static, str>,
+}
+
+#[cfg(feature = "fuzz")]
+#[cfg_attr(feature = "fuzz", no_coverage)]
+mod noscript_mutator {
+    use std::borrow::Cow;
+
+    use fuzzcheck::{mutators::map::MapMutator, DefaultMutator, Mutator};
+
+    use super::NoScript;
+
+    impl NoScript {
+        fn mutator() -> impl Mutator<NoScript> {
+            MapMutator::new(
+                crate::mutators::cow_mutator(),
+                |noscript: &NoScript| Some(noscript.text.clone()),
+                |text: &Cow<'static, str>| NoScript { text: text.clone() },
+                |_, c| c,
+            )
+        }
+    }
+
+    impl DefaultMutator for NoScript {
+        type Mutator = impl Mutator<NoScript>;
+
+        fn default_mutator() -> Self::Mutator {
+            NoScript::mutator()
+        }
+    }
 }
 
 /// Creates a new `NoScript` tag – functionally equivalent to `NoScript::new(<text>)` (but easier to

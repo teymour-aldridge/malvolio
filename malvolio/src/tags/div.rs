@@ -7,7 +7,6 @@ use std::{borrow::Cow, collections::HashMap, fmt::Display};
 use crate::{
     attributes::{common::Class, IntoAttribute},
     prelude::{Style, H1, H2, H3, H4, H5, H6},
-    to_html,
 };
 
 use crate::{into_attribute_for_grouping_enum, into_grouping_union, prelude::Id, utility_enum};
@@ -17,13 +16,14 @@ use super::body::body_node::BodyNode;
 #[derive(Debug, Derivative, Clone)]
 #[derivative(Default(new = "true"))]
 #[cfg_attr(feature = "pub_fields", derive(FieldsAccessibleVariant))]
+#[cfg_attr(feature = "fuzz", derive(serde::Serialize, serde::Deserialize))]
 /// A `<div>` tag.
 ///
 /// See the [MDN Web Docs](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/div)
 /// for further information.
 pub struct Div {
-    children: Vec<BodyNode>,
-    attrs: HashMap<Cow<'static, str>, Cow<'static, str>>,
+    pub(crate) children: Vec<BodyNode>,
+    pub(crate) attrs: HashMap<Cow<'static, str>, Cow<'static, str>>,
 }
 
 /// Creates a new `<div>` tag – functionally equivalent to `Div::new()` (but easier to type.)
@@ -260,8 +260,6 @@ impl Div {
     {
         self.child(c.into())
     }
-
-    to_html!();
 }
 
 impl Display for Div {

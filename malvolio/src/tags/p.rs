@@ -23,10 +23,52 @@ use crate::{
 /// info.
 #[derive(Default, Debug, Clone)]
 #[cfg_attr(feature = "pub_fields", derive(FieldsAccessibleVariant))]
+#[cfg_attr(feature = "fuzz", derive(serde::Serialize, serde::Deserialize))]
 pub struct P {
-    attrs: HashMap<Cow<'static, str>, Cow<'static, str>>,
-    text: Cow<'static, str>,
-    children: Vec<BodyNode>,
+    pub(crate) attrs: HashMap<Cow<'static, str>, Cow<'static, str>>,
+    pub(crate) text: Cow<'static, str>,
+    pub(crate) children: Vec<BodyNode>,
+}
+
+#[cfg(feature = "fuzz")]
+#[cfg_attr(feature = "fuzz", no_coverage)]
+mod p {
+    use fuzzcheck::{
+        mutators::{
+            map::MapMutator,
+            tuples::{Tuple2Mutator, TupleMutatorWrapper},
+        },
+        DefaultMutator, Mutator,
+    };
+
+    use super::P;
+
+    impl P {
+        fn mutator() -> impl Mutator<P> {
+            let mutator = TupleMutatorWrapper::new(Tuple2Mutator::new(
+                crate::mutators::attr_mutator(),
+                crate::mutators::cow_mutator(),
+            ));
+            MapMutator::new(
+                mutator,
+                |p: &P| Some((p.attrs.clone(), p.text.clone())),
+                |(attrs, text)| P {
+                    attrs: attrs.clone(),
+                    text: text.clone(),
+                    children: vec![],
+                },
+                |_, c| c,
+            )
+        }
+    }
+
+    impl DefaultMutator for P {
+        type Mutator = impl Mutator<P>;
+
+        fn default_mutator() -> Self::Mutator {
+            P::mutator()
+        }
+    }
 }
 
 /// Creates a new `P` tag – functionally equivalent to `P::new()` (but easier to type.)
