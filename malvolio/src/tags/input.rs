@@ -16,12 +16,43 @@ use super::body::body_node::BodyNode;
 #[derive(Debug, Clone, Derivative)]
 #[derivative(Default(new = "true"))]
 #[cfg_attr(feature = "pub_fields", derive(FieldsAccessibleVariant))]
+#[cfg_attr(feature = "fuzz", derive(serde::Serialize, serde::Deserialize))]
 /// A form input.
 ///
 /// See the [MDN Web Docs](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input)
 /// for further information.
+#[must_use]
 pub struct Input {
     attrs: HashMap<Cow<'static, str>, Cow<'static, str>>,
+}
+
+#[cfg(feature = "fuzz")]
+#[cfg_attr(feature = "fuzz", no_coverage)]
+mod input_mutator {
+    use fuzzcheck::{mutators::map::MapMutator, DefaultMutator, Mutator};
+
+    use super::Input;
+
+    impl Input {
+        fn mutator() -> impl Mutator<Input> {
+            MapMutator::new(
+                crate::mutators::attr_mutator(),
+                |input: &Input| Some(input.attrs.clone()),
+                |attrs| Input {
+                    attrs: attrs.clone(),
+                },
+                |_, c| c,
+            )
+        }
+    }
+
+    impl DefaultMutator for Input {
+        type Mutator = impl Mutator<Input>;
+
+        fn default_mutator() -> Self::Mutator {
+            Input::mutator()
+        }
+    }
 }
 
 /// Creates a new `Input` tag – functionally equivalent to `Input::new()` (but easier to type.)
@@ -198,29 +229,6 @@ impl Value {
 impl IntoAttribute for Value {
     fn into_attribute(self) -> (Cow<'static, str>, Cow<'static, str>) {
         ("value".into(), self.0)
-    }
-}
-
-#[cfg(all(feature = "with_yew", not(feature = "strategies")))]
-mod vnode_impls {
-    use yew::virtual_dom::VTag;
-
-    use crate::vnode::IntoVNode;
-
-    use super::*;
-
-    impl IntoVNode for Input {
-        fn into_vnode(self) -> yew::virtual_dom::VNode {
-            let mut tag = VTag::new("input");
-            for (k, v) in self.attrs {
-                if let ::std::borrow::Cow::Borrowed(string) = k {
-                    tag.add_attribute(string, v);
-                } else {
-                    panic!("Dynamic keys for Yew are not yet supported.")
-                }
-            }
-            tag.into()
-        }
     }
 }
 

@@ -2,43 +2,44 @@
 This source code file is distributed subject to the terms of the Mozilla Public License v2.0.
 A copy of this license can be found in the `licenses` directory at the root of this project.
 */
+
 use std::fmt::Display;
 
 use super::{body::Body, head::Head};
-#[cfg(feature = "with_rocket")]
-use rocket::http::Status;
-#[cfg(feature = "with_rocket")]
-use rocket::{response::Responder, Response};
-#[cfg(feature = "with_rocket")]
-use std::io::Cursor;
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Default)]
 #[cfg_attr(feature = "pub_fields", derive(FieldsAccessibleVariant))]
+#[cfg_attr(feature = "fuzz", derive(serde::Serialize, serde::Deserialize))]
 /// Construct a HTML document. If you are trying to render to a string, this is what you want to use.
-///
-/// If you're using Yew (enable the `with_yew` feature in your `Cargo.toml` to do this) then you
-/// probably want to use the relevant tag which your component should return instead.
+#[must_use]
 pub struct Html {
-    #[cfg(feature = "with_rocket")]
-    status: Status,
     head: Head,
     body: Body,
+}
+
+#[cfg(feature = "fuzz")]
+#[cfg_attr(feature = "fuzz", no_coverage)]
+mod html_mutator {
+    use fuzzcheck::make_mutator;
+
+    use crate::tags::{body::Body, head::Head};
+
+    use super::Html;
+
+    make_mutator! {
+        name: HtmlMutator,
+        recursive: false,
+        default: true,
+        type: pub struct Html {
+            head: Head,
+            body: Body,
+        }
+    }
 }
 
 /// Creates a new `Html` tag – functionally equivalent to `Html::new()` (but easier to type.)
 pub fn html() -> Html {
     Html::new()
-}
-
-impl Default for Html {
-    fn default() -> Self {
-        Self {
-            #[cfg(feature = "with_rocket")]
-            status: Status::Ok,
-            head: Head::default(),
-            body: Body::default(),
-        }
-    }
 }
 
 impl Display for Html {
@@ -49,17 +50,6 @@ impl Display for Html {
         self.body.fmt(f)?;
         f.write_str("</html>")?;
         Ok(())
-    }
-}
-
-#[cfg(feature = "with_rocket")]
-impl<'r, 'o: 'r> Responder<'r, 'o> for Html {
-    fn respond_to(self, _: &rocket::Request) -> rocket::response::Result<'o> {
-        Response::build()
-            .status(self.status)
-            .raw_header("Content-Type", "text/html")
-            .streamed_body(Cursor::new(self.to_string()))
-            .ok()
     }
 }
 
@@ -79,14 +69,6 @@ impl Html {
     /// Attach a new <body> tag to this `Html` instance.
     pub fn body(mut self, body: Body) -> Self {
         self.body = body;
-        self
-    }
-
-    #[cfg(feature = "with_rocket")]
-    /// Add the corresponding status code to return this HTML document with. Note that this is only
-    /// available if you have enabled the `with_rocket` feature.
-    pub fn status(mut self, status: Status) -> Self {
-        self.status = status;
         self
     }
 }

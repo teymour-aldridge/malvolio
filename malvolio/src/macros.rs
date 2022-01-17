@@ -32,6 +32,43 @@ macro_rules! heading_display {
 
 #[macro_export]
 #[doc(hidden)]
+macro_rules! impl_of_heading_mutator {
+    ($name:ident) => {
+        #[cfg(feature = "fuzz")]
+        #[cfg_attr(feature = "fuzz", no_coverage)]
+        impl $name {
+            fn mutator() -> impl fuzzcheck::Mutator<$name> {
+                fuzzcheck::mutators::map::MapMutator::new(
+                    fuzzcheck::mutators::tuples::TupleMutatorWrapper::new(
+                        fuzzcheck::mutators::tuples::Tuple2Mutator::new(
+                            crate::mutators::valid_attr_string_mutator::<0>(),
+                            crate::mutators::attr_mutator(),
+                        ),
+                    ),
+                    |h1: &$name| Some((h1.text.to_string(), h1.attrs.clone())),
+                    |(text, attrs)| $name {
+                        text: std::borrow::Cow::Owned(text.clone()),
+                        attrs: attrs.clone(),
+                    },
+                    |_, c| c,
+                )
+            }
+        }
+
+        #[cfg(feature = "fuzz")]
+        #[cfg_attr(feature = "fuzz", no_coverage)]
+        impl fuzzcheck::DefaultMutator for $name {
+            type Mutator = impl fuzzcheck::Mutator<$name>;
+
+            fn default_mutator() -> Self::Mutator {
+                Self::mutator()
+            }
+        }
+    };
+}
+
+#[macro_export]
+#[doc(hidden)]
 /// For internal use only.
 ///
 /// Generates new code to construct a heading.
@@ -195,74 +232,6 @@ macro_rules! into_attribute_for_grouping_enum {
 
                 }
             }
-        }
-    };
-}
-
-#[cfg(test)]
-#[macro_export]
-#[doc(hidden)]
-/// For internal use only
-macro_rules! component_named_app_with_html {
-    ($($html:tt)*) => {
-        struct App {}
-        impl Component for App {
-            type Properties = ();
-            type Message = ();
-            fn create(_props: Self::Properties, _link: ComponentLink<Self>) -> Self {
-                Self {}
-            }
-            fn update(&mut self, _msg: Self::Message) -> bool {
-                false
-            }
-            fn change(&mut self, _props: Self::Properties) -> bool {
-                false
-            }
-            fn view(&self) -> ::yew::virtual_dom::VNode {
-                $($html)*
-            }
-        }
-    }
-}
-
-#[cfg(not(tarpaulin))]
-#[macro_export]
-#[doc(hidden)]
-/// For internal use only.
-macro_rules! heading_of_vnode {
-    ($name:ident) => {
-        #[cfg(all(feature = "with_yew", not(feature = "strategies")))]
-        impl $crate::vnode::IntoVNode for $name {
-            fn into_vnode(self) -> ::yew::virtual_dom::VNode {
-                let mut vtag = ::yew::virtual_dom::VTag::new(stringify!($name));
-                for (k, v) in self.attrs.into_iter() {
-                    if let ::std::borrow::Cow::Borrowed(string) = k {
-                        vtag.add_attribute(string, v);
-                    } else {
-                        panic!("Dynamic keys for Yew are not yet supported.")
-                    }
-                }
-                vtag.add_child(::yew::virtual_dom::VText::new(self.text.to_string()).into());
-                vtag.into()
-            }
-        }
-        impl $name {
-            $crate::to_html!();
-        }
-    };
-}
-
-#[macro_export]
-#[doc(hidden)]
-/// Generates a function to call `into_vnode`
-macro_rules! to_html {
-    () => {
-        #[cfg(all(feature = "with_yew", not(feature = "strategies")))]
-        #[cfg(not(tarpaulin))]
-        /// Turn this item into a `VNode`. You only need to call this on the item that you
-        /// return in the `html` function.
-        pub fn yew(self) -> yew::virtual_dom::VNode {
-            $crate::vnode::IntoVNode::into_vnode(self)
         }
     };
 }

@@ -7,9 +7,40 @@ use crate::{
 #[derive(Debug, Derivative, Clone)]
 #[derivative(Default(new = "true"))]
 #[cfg_attr(feature = "pub_fields", derive(FieldsAccessibleVariant))]
+#[cfg_attr(feature = "fuzz", derive(serde::Serialize, serde::Deserialize))]
 /// The `<img>` tag.
+#[must_use]
 pub struct Img {
     attrs: HashMap<Cow<'static, str>, Cow<'static, str>>,
+}
+
+#[cfg(feature = "fuzz")]
+#[cfg_attr(feature = "fuzz", no_coverage)]
+mod div_mutator {
+    use fuzzcheck::{mutators::map::MapMutator, DefaultMutator, Mutator};
+
+    use super::Img;
+
+    impl Img {
+        fn mutator() -> impl Mutator<Img> {
+            MapMutator::new(
+                crate::mutators::attr_mutator(),
+                |img: &Img| Some(img.attrs.clone()),
+                |attrs| Img {
+                    attrs: attrs.clone(),
+                },
+                |_, c| c,
+            )
+        }
+    }
+
+    impl DefaultMutator for Img {
+        type Mutator = impl Mutator<Img>;
+
+        fn default_mutator() -> Self::Mutator {
+            Img::mutator()
+        }
+    }
 }
 
 /// Creates a new `Img` tag – functionally equivalent to `Img::new()` (but easier to type.)
@@ -127,31 +158,5 @@ mod test {
             a.attr("alt").unwrap(),
             "An animated picture of a cat doing some humorous task."
         );
-    }
-}
-
-#[cfg(all(feature = "with_yew", not(feature = "strategies")))]
-mod vnode_impls {
-    use yew::virtual_dom::VTag;
-
-    use super::*;
-
-    use crate::vnode::IntoVNode;
-
-    impl IntoVNode for Img {
-        fn into_vnode(self) -> yew::virtual_dom::VNode {
-            let mut tag = VTag::new("img");
-            for (key, value) in self.attrs {
-                if let Cow::Borrowed(key) = key {
-                    tag.add_attribute(key, value);
-                } else {
-                    panic!(
-                        "Dynamic attributes (i.e. `String` or a non-`'static` str) are not yet
-                        supported for Yew."
-                    )
-                }
-            }
-            From::from(tag)
-        }
     }
 }

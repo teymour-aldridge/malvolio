@@ -19,13 +19,59 @@ use super::{body::body_node::BodyNode, input::Name, option::SelectOption};
 #[derive(Derivative, Debug, Clone)]
 #[derivative(Default(new = "true"))]
 #[cfg_attr(feature = "pub_fields", derive(FieldsAccessibleVariant))]
+#[cfg_attr(feature = "fuzz", derive(serde::Serialize, serde::Deserialize))]
 /// The `select` tag.
 ///
 /// See [MDN's page on this](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/select) for
 /// further information.
+#[must_use]
 pub struct Select {
     attrs: HashMap<Cow<'static, str>, Cow<'static, str>>,
     children: Vec<SelectOption>,
+}
+
+#[cfg(feature = "fuzz")]
+#[cfg_attr(feature = "fuzz", no_coverage)]
+mod select_mutator {
+    use fuzzcheck::{
+        mutators::{
+            map::MapMutator,
+            tuples::{Tuple2Mutator, TupleMutatorWrapper},
+            vector::VecMutator,
+        },
+        DefaultMutator, Mutator,
+    };
+
+    use crate::tags::option::SelectOption;
+
+    use super::Select;
+
+    impl Select {
+        fn mutator() -> impl Mutator<Select> {
+            let mutator = TupleMutatorWrapper::new(Tuple2Mutator::new(
+                crate::mutators::attr_mutator(),
+                VecMutator::new(SelectOption::default_mutator(), 0..=usize::MAX),
+            ));
+
+            MapMutator::new(
+                mutator,
+                |select: &Select| Some((select.attrs.clone(), select.children.clone())),
+                |(attrs, children)| Select {
+                    children: children.clone(),
+                    attrs: attrs.clone(),
+                },
+                |_, c| c,
+            )
+        }
+    }
+
+    impl DefaultMutator for Select {
+        type Mutator = impl Mutator<Select>;
+
+        fn default_mutator() -> Self::Mutator {
+            Select::mutator()
+        }
+    }
 }
 
 /// Creates a new `Select` tag – functionally equivalent to `Select::new()` (but easier to type.)
@@ -100,29 +146,3 @@ into_attribute_for_grouping_enum!(SelectAttr, Name, Class, Id);
 into_grouping_union!(Name, SelectAttr);
 into_grouping_union!(Class, SelectAttr);
 into_grouping_union!(Id, SelectAttr);
-
-#[cfg(all(feature = "with_yew", not(feature = "strategies")))]
-mod vnode_impls {
-    use yew::virtual_dom::VTag;
-
-    use crate::vnode::IntoVNode;
-
-    use super::*;
-
-    impl IntoVNode for Select {
-        fn into_vnode(self) -> yew::virtual_dom::VNode {
-            let mut tag = VTag::new("select");
-            for (k, v) in self.attrs {
-                if let ::std::borrow::Cow::Borrowed(string) = k {
-                    tag.add_attribute(string, v);
-                } else {
-                    panic!("Dynamic keys for Yew are not yet supported.")
-                }
-            }
-            for child in self.children {
-                tag.add_child(child.into_vnode());
-            }
-            tag.into()
-        }
-    }
-}

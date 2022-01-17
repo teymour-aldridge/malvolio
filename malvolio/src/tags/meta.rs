@@ -13,13 +13,38 @@ use super::head::head_node::HeadNode;
 #[derive(Derivative, Debug, Clone)]
 #[derivative(Default(new = "true"))]
 #[cfg_attr(feature = "pub_fields", derive(FieldsAccessibleVariant))]
+#[cfg_attr(feature = "fuzz", derive(serde::Serialize, serde::Deserialize))]
 /// A metadata element. Useful for adding metadata which can not be represented through other HTML
 /// tags.
 ///
 /// See [MDN's page on this](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/meta) for
 /// further information.
+#[must_use]
 pub struct Meta {
     attrs: HashMap<Cow<'static, str>, Cow<'static, str>>,
+}
+
+#[cfg(feature = "fuzz")]
+#[cfg_attr(feature = "fuzz", no_coverage)]
+mod meta_mutator {
+    use fuzzcheck::{mutators::map::MapMutator, DefaultMutator, Mutator};
+
+    use super::Meta;
+
+    impl DefaultMutator for Meta {
+        type Mutator = impl Mutator<Meta>;
+
+        fn default_mutator() -> Self::Mutator {
+            MapMutator::new(
+                crate::mutators::attr_mutator(),
+                |meta: &Meta| Some(meta.attrs.clone()),
+                |attrs| Meta {
+                    attrs: attrs.clone(),
+                },
+                |_, c| c,
+            )
+        }
+    }
 }
 
 /// Creates a new `Meta` tag – functionally equivalent to `Meta::new()` (but easier to type.)
@@ -132,29 +157,6 @@ impl IntoAttribute for Content {
 }
 
 into_grouping_union!(Content, MetaAttr);
-
-#[cfg(all(feature = "with_yew", not(feature = "strategies")))]
-mod vnode_impls {
-    use yew::virtual_dom::VTag;
-
-    use crate::vnode::IntoVNode;
-
-    use super::*;
-
-    impl IntoVNode for Meta {
-        fn into_vnode(self) -> yew::virtual_dom::VNode {
-            let mut tag = VTag::new("meta");
-            for (k, v) in self.attrs {
-                if let ::std::borrow::Cow::Borrowed(string) = k {
-                    tag.add_attribute(string, v);
-                } else {
-                    panic!("Dynamic keys for Yew are not yet supported.")
-                }
-            }
-            tag.into()
-        }
-    }
-}
 
 #[cfg(test)]
 mod test {

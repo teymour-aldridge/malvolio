@@ -19,7 +19,7 @@ jobs:
       - name: Check formatting
         run: cargo fmt -- --check
       - name: Lint
-        run: cargo clippy --all-features -- -D warnings
+        run: cargo clippy --features pub_fields -- -D warnings
   test:
     runs-on: ubuntu-latest
     steps:
@@ -31,23 +31,4 @@ jobs:
           components: rustfmt, clippy
       - uses: Swatinem/rust-cache@v1
       - name: Run tests
-        run: cargo test --workspace --all-features
-
-  test-malvolio-in-browser:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-
-      - uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
-          override: true
-
-      - uses: Swatinem/rust-cache@v1
-
-      - name: Install
-        run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
-
-      - run: (cd malvolio && wasm-pack test --headless --chrome -- --features with_yew)
-
-      - run: (cd malvolio && wasm-pack test --headless --firefox -- --features with_yew)
+        run: cargo test --workspace --features pub_fields

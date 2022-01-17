@@ -8,7 +8,7 @@ use crate::{
     attributes::IntoAttribute,
     into_attribute_for_grouping_enum, into_grouping_union,
     prelude::{Style, H1, H2, H3, H4, H5, H6},
-    to_html, utility_enum,
+    utility_enum,
 };
 
 use crate::tags::body::body_node::BodyNode;
@@ -16,6 +16,8 @@ use crate::tags::body::body_node::BodyNode;
 #[derive(Debug, Clone, Derivative)]
 #[derivative(Default(new = "true"))]
 #[cfg_attr(feature = "pub_fields", derive(FieldsAccessibleVariant))]
+#[cfg_attr(feature = "fuzz", derive(serde::Serialize, serde::Deserialize))]
+#[must_use]
 /// A HTML form. You can create a form with `Form::new()` or `Form::default()` (they are identical)
 /// and then use any of the provided methods to manipulate it (for example adding child elements or
 /// attributes).
@@ -59,8 +61,47 @@ use crate::tags::body::body_node::BodyNode;
 /// );
 /// ```
 pub struct Form {
-    children: Vec<BodyNode>,
-    attrs: HashMap<Cow<'static, str>, Cow<'static, str>>,
+    pub(crate) children: Vec<BodyNode>,
+    pub(crate) attrs: HashMap<Cow<'static, str>, Cow<'static, str>>,
+}
+
+#[cfg(feature = "fuzz")]
+#[cfg_attr(feature = "fuzz", no_coverage)]
+mod form_mutator {
+    use fuzzcheck::{
+        mutators::{
+            map::MapMutator,
+            tuples::{Tuple1Mutator, TupleMutatorWrapper},
+        },
+        DefaultMutator, Mutator,
+    };
+
+    use super::Form;
+
+    impl Form {
+        fn mutator() -> impl Mutator<Form> {
+            let mutator =
+                TupleMutatorWrapper::new(Tuple1Mutator::new(crate::mutators::attr_mutator()));
+
+            MapMutator::new(
+                mutator,
+                |form: &Form| Some((form.attrs.clone(),)),
+                |(attrs,)| Form {
+                    children: vec![],
+                    attrs: attrs.clone(),
+                },
+                |_, c| c,
+            )
+        }
+    }
+
+    impl DefaultMutator for Form {
+        type Mutator = impl Mutator<Form>;
+
+        fn default_mutator() -> Self::Mutator {
+            Form::mutator()
+        }
+    }
 }
 
 /// Creates a new `Form` tag – functionally equivalent to `Form::new()` (but easier to type.)
@@ -260,8 +301,6 @@ impl Form {
     {
         self.child(c.into())
     }
-
-    to_html!();
 }
 
 impl Display for Form {
@@ -344,32 +383,6 @@ impl Action {
 impl IntoAttribute for Action {
     fn into_attribute(self) -> (Cow<'static, str>, Cow<'static, str>) {
         ("action".into(), self.0)
-    }
-}
-
-#[cfg(all(feature = "with_yew", not(feature = "strategies")))]
-mod vnode_impls {
-    use yew::virtual_dom::VTag;
-
-    use crate::vnode::IntoVNode;
-
-    use super::*;
-
-    impl IntoVNode for Form {
-        fn into_vnode(self) -> yew::virtual_dom::VNode {
-            let mut tag = VTag::new("form");
-            for (key, value) in self.attrs {
-                if let Cow::Borrowed(key) = key {
-                    tag.add_attribute(key, value);
-                } else {
-                    panic!("Yew dynamic tags are not yet supported.")
-                }
-            }
-            for child in self.children {
-                tag.add_child(child.into_vnode());
-            }
-            tag.into()
-        }
     }
 }
 

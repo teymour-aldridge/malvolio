@@ -6,14 +6,18 @@ use std::{borrow::Cow, collections::HashMap};
 
 use super::body::body_node::BodyNode;
 
-use crate::{heading_display, impl_of_heading_new_fn, into_grouping_union};
+use crate::{
+    heading_display, impl_of_heading_mutator, impl_of_heading_new_fn, into_grouping_union,
+};
 
 #[derive(Debug, Clone)]
 #[cfg_attr(feature = "pub_fields", derive(FieldsAccessibleVariant))]
+#[cfg_attr(feature = "fuzz", derive(serde::Serialize, serde::Deserialize))]
 /// A label for a form.
 ///
 /// See the [MDN Web Docs](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/label)
 /// for further information.
+#[must_use]
 pub struct Label {
     text: Cow<'static, str>,
     attrs: HashMap<Cow<'static, str>, Cow<'static, str>>,
@@ -21,18 +25,11 @@ pub struct Label {
 
 impl_of_heading_new_fn!(Label, label);
 
+impl_of_heading_mutator!(Label);
+
 heading_display!(Label);
 
 into_grouping_union!(Label, BodyNode);
-
-#[cfg(all(feature = "with_yew", not(feature = "strategies")))]
-mod vnode_impls {
-    use crate::heading_of_vnode;
-
-    use super::*;
-
-    heading_of_vnode!(Label);
-}
 
 #[cfg(test)]
 mod test {

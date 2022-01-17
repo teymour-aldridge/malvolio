@@ -15,10 +15,49 @@ pub mod body_node;
 #[derive(Derivative, Debug, Clone)]
 #[derivative(Default(new = "true"))]
 #[cfg_attr(feature = "pub_fields", derive(FieldsAccessibleVariant))]
+#[cfg_attr(feature = "fuzz", derive(serde::Serialize, serde::Deserialize))]
 /// The <body> tag.
+#[must_use]
 pub struct Body {
     children: Vec<BodyNode>,
     attrs: HashMap<Cow<'static, str>, Cow<'static, str>>,
+}
+
+#[cfg(feature = "fuzz")]
+#[cfg_attr(feature = "fuzz", no_coverage)]
+mod body_mutator {
+    use fuzzcheck::{
+        mutators::{
+            map::MapMutator,
+            tuples::{Tuple2Mutator, TupleMutatorWrapper},
+            vector::VecMutator,
+        },
+        DefaultMutator, Mutator,
+    };
+
+    use super::{body_node::BodyNode, Body};
+
+    impl DefaultMutator for Body {
+        type Mutator = impl Mutator<Body>;
+
+        fn default_mutator() -> Self::Mutator {
+            let tuple = Tuple2Mutator::new(
+                VecMutator::new(BodyNode::default_mutator(), 0..=usize::MAX),
+                crate::mutators::attr_mutator(),
+            );
+            let tuple = TupleMutatorWrapper::new(tuple);
+
+            MapMutator::new(
+                tuple,
+                |body: &Body| Some((body.children.clone(), body.attrs.clone())),
+                |(children, attrs)| Body {
+                    children: children.clone(),
+                    attrs: attrs.clone(),
+                },
+                |_, c| c,
+            )
+        }
+    }
 }
 
 /// Creates a new `Body` tag – functionally equivalent to `Body::new()` (but shorter to type.)

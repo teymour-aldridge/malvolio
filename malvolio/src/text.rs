@@ -4,11 +4,15 @@ A copy of this license can be found in the `licenses` directory at the root of t
 */
 use std::{borrow::Cow, collections::HashMap, fmt::Display};
 
-use crate::{impl_of_heading_new_fn, into_grouping_union, tags::body::body_node::BodyNode};
+use crate::{
+    impl_of_heading_mutator, impl_of_heading_new_fn, into_grouping_union,
+    tags::body::body_node::BodyNode,
+};
 
 #[derive(Default, Debug, Clone)]
 #[cfg_attr(feature = "pub_fields", derive(FieldsAccessibleVariant))]
-
+#[cfg_attr(feature = "fuzz", derive(serde::Serialize, serde::Deserialize))]
+#[must_use]
 /// A text node.
 pub struct Text {
     text: Cow<'static, str>,
@@ -17,6 +21,8 @@ pub struct Text {
 
 impl_of_heading_new_fn!(Text, text);
 
+impl_of_heading_mutator!(Text);
+
 into_grouping_union!(Text, BodyNode);
 
 impl Display for Text {
@@ -24,21 +30,6 @@ impl Display for Text {
         self.text.fmt(f)
     }
 }
-
-#[cfg(all(feature = "with_yew", not(feature = "strategies")))]
-mod vnode_impls {
-    use yew::virtual_dom::VText;
-
-    use crate::vnode::IntoVNode;
-
-    use super::*;
-    impl IntoVNode for Text {
-        fn into_vnode(self) -> yew::virtual_dom::VNode {
-            VText::new(self.text).into()
-        }
-    }
-}
-
 #[cfg(test)]
 mod test_sanitize {
     use super::Text;

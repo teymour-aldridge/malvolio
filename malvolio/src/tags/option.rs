@@ -17,13 +17,52 @@ use super::input::{Name, Value};
 #[derive(Derivative, Debug, Clone)]
 #[derivative(Default(new = "true"))]
 #[cfg_attr(feature = "pub_fields", derive(FieldsAccessibleVariant))]
+#[cfg_attr(feature = "fuzz", derive(serde::Serialize, serde::Deserialize))]
 /// The `option` tag.
 ///
 /// See [MDN's page on this](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/option) for
-/// further information..
+/// further information.
+#[must_use]
 pub struct SelectOption {
     attrs: HashMap<Cow<'static, str>, Cow<'static, str>>,
     text: Cow<'static, str>,
+}
+
+#[cfg(feature = "fuzz")]
+#[cfg_attr(feature = "fuzz", no_coverage)]
+mod select_mutator {
+    use std::borrow::Cow;
+
+    use fuzzcheck::{
+        mutators::{
+            map::MapMutator,
+            tuples::{Tuple2Mutator, TupleMutatorWrapper},
+        },
+        DefaultMutator, Mutator,
+    };
+
+    use super::SelectOption;
+
+    impl DefaultMutator for SelectOption {
+        type Mutator = impl Mutator<SelectOption>;
+
+        fn default_mutator() -> Self::Mutator {
+            let tuple = Tuple2Mutator::new(
+                crate::mutators::attr_mutator(),
+                crate::mutators::valid_attr_string_mutator::<0>(),
+            );
+            let tuple = TupleMutatorWrapper::new(tuple);
+            MapMutator::new(
+                tuple,
+                |select: &SelectOption| Some((select.attrs.clone(), select.text.to_string())),
+                |(attrs, text)| SelectOption {
+                    attrs: attrs.clone(),
+                    text: Cow::Owned(text.clone()),
+                },
+                |_, c| c,
+            )
+        }
+    }
 }
 
 /// Creates a new `SelectOption` tag – functionally equivalent to `SelectOption::new()` (but easier
@@ -108,27 +147,3 @@ into_attribute_for_grouping_enum!(SelectOptionAttr, Value, Id, Name);
 into_grouping_union!(Value, SelectOptionAttr);
 into_grouping_union!(Id, SelectOptionAttr);
 into_grouping_union!(Name, SelectOptionAttr);
-
-#[cfg(all(feature = "with_yew", not(feature = "strategies")))]
-mod vnode_impls {
-    use yew::virtual_dom::{VTag, VText};
-
-    use crate::vnode::IntoVNode;
-
-    use super::*;
-
-    impl IntoVNode for SelectOption {
-        fn into_vnode(self) -> yew::virtual_dom::VNode {
-            let mut tag = VTag::new("option");
-            for (k, v) in self.attrs {
-                if let ::std::borrow::Cow::Borrowed(string) = k {
-                    tag.add_attribute(string, v);
-                } else {
-                    panic!("Dynamic keys for Yew are not yet supported.")
-                }
-            }
-            tag.add_child(VText::new(self.text).into());
-            tag.into()
-        }
-    }
-}

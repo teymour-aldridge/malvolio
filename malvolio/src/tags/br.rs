@@ -19,6 +19,11 @@ use super::body::body_node::BodyNode;
 ///
 /// See the [MDN Web Docs](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/br) for more
 /// info.
+#[cfg_attr(
+    feature = "fuzz",
+    derive(fuzzcheck::DefaultMutator, serde::Serialize, serde::Deserialize)
+)]
+#[must_use]
 pub struct Br;
 
 impl Display for Br {
@@ -28,21 +33,6 @@ impl Display for Br {
 }
 
 into_grouping_union_without_lifetimes!(Br, BodyNode);
-
-#[cfg(all(feature = "with_yew", not(feature = "strategies")))]
-mod vnode_impls {
-    use yew::virtual_dom::VTag;
-
-    use crate::vnode::IntoVNode;
-
-    use super::*;
-
-    impl IntoVNode for Br {
-        fn into_vnode(self) -> yew::virtual_dom::VNode {
-            VTag::new("br").into()
-        }
-    }
-}
 
 #[cfg(test)]
 mod test {

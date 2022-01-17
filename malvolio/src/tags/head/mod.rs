@@ -13,10 +13,29 @@ pub mod head_node;
 #[derive(Derivative, Debug, Clone)]
 #[derivative(Default = "new")]
 #[cfg_attr(feature = "pub_fields", derive(FieldsAccessibleVariant))]
-
+#[cfg_attr(feature = "fuzz", derive(serde::Serialize, serde::Deserialize))]
+#[must_use]
 /// The <head> tag.
 pub struct Head {
     children: Vec<HeadNode>,
+}
+
+#[cfg(feature = "fuzz")]
+#[cfg_attr(feature = "fuzz", no_coverage)]
+mod head_mutator {
+    use fuzzcheck::make_mutator;
+
+    use super::head_node::HeadNode;
+    use super::Head;
+
+    make_mutator! {
+        name: HeadMutator,
+        recursive: false,
+        default: true,
+        type: pub struct Head {
+            children: Vec<HeadNode>,
+        }
+    }
 }
 
 /// Creates a new `Head` tag – functionally equivalent to `Head::new()` (but easier to type.)

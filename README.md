@@ -1,7 +1,6 @@
 # Malvolio
 
-Malvolio is a library with a "builder-syntax" for creating complex HTML documents with ease. It runs
-both on servers (and renders to strings) or in browsers (with [Yew](https://yew.rs)).
+Malvolio is a library with a "builder-syntax" for creating complex HTML documents.
 
 Unlike "jsx" style solutions, Malvolio avoids climbing out what has been described as the
 "macro escape hatch" [1](https://twitter.com/graydon_pub/status/1294692200916246528). This means

@@ -5,9 +5,9 @@ A copy of this license can be found in the `licenses` directory at the root of t
 
 use crate::{
     attributes::IntoAttribute,
-    into_attribute_for_grouping_enum, into_grouping_union,
+    impl_of_heading_mutator, into_attribute_for_grouping_enum, into_grouping_union,
     prelude::{Id, Style},
-    to_html, utility_enum,
+    utility_enum,
 };
 use ammonia::clean;
 use std::{borrow::Cow, collections::HashMap, fmt::Display};
@@ -28,10 +28,14 @@ use super::body::body_node::BodyNode;
 #[derive(Debug, Clone, Derivative)]
 #[derivative(Default(new = "true"))]
 #[cfg_attr(feature = "pub_fields", derive(FieldsAccessibleVariant))]
+#[cfg_attr(feature = "fuzz", derive(serde::Serialize, serde::Deserialize))]
+#[must_use]
 pub struct A {
     attrs: HashMap<Cow<'static, str>, Cow<'static, str>>,
     text: Cow<'static, str>,
 }
+
+impl_of_heading_mutator!(A);
 
 /// Creates a new `A` tag – functionally equivalent to `A::new()` (but easier to type.)
 pub fn a() -> A {
@@ -123,8 +127,6 @@ impl A {
     pub fn read_attribute(&self, attribute: &'static str) -> Option<&Cow<'static, str>> {
         self.attrs.get(attribute)
     }
-
-    to_html!();
 }
 
 impl Display for A {
@@ -239,34 +241,6 @@ impl IntoAttribute for Target {
         )
     }
 }
-
-#[cfg(all(feature = "with_yew", not(feature = "strategies")))]
-mod vnode_impls {
-    use yew::virtual_dom::{VTag, VText};
-
-    use super::*;
-
-    use crate::vnode::IntoVNode;
-
-    impl IntoVNode for A {
-        fn into_vnode(self) -> yew::virtual_dom::VNode {
-            let mut tag = VTag::new("a");
-
-            for (key, value) in self.attrs {
-                if let Cow::Borrowed(key) = key {
-                    tag.add_attribute(key, value);
-                } else {
-                    panic!("Dynamic Yew attributes are not yet supported.")
-                }
-            }
-
-            tag.add_child(VText::new(self.text).into());
-
-            tag.into()
-        }
-    }
-}
-
 #[cfg(test)]
 mod test {
     use crate::prelude::*;

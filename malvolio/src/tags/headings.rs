@@ -6,34 +6,23 @@ A copy of this license can be found in the `licenses` directory at the root of t
 use std::{borrow::Cow, collections::HashMap};
 
 use crate::{
-    heading_display, impl_of_heading_new_fn, into_attribute_for_grouping_enum, into_grouping_union,
+    heading_display, impl_of_heading_mutator, impl_of_heading_new_fn,
+    into_attribute_for_grouping_enum, into_grouping_union,
     prelude::{Class, Id, Style},
     utility_enum,
 };
 
 use super::body::body_node::BodyNode;
 
-#[cfg(all(feature = "with_yew", not(feature = "strategies")))]
-mod vnode_impls {
-    use super::*;
-
-    use crate::heading_of_vnode;
-
-    heading_of_vnode!(H1);
-    heading_of_vnode!(H2);
-    heading_of_vnode!(H3);
-    heading_of_vnode!(H4);
-    heading_of_vnode!(H5);
-    heading_of_vnode!(H6);
-}
-
 #[derive(Default, Debug, Clone)]
 #[cfg_attr(feature = "pub_fields", derive(FieldsAccessibleVariant))]
+#[cfg_attr(feature = "fuzz", derive(serde::Serialize, serde::Deserialize))]
 /// The <h1> tag.
 ///
 /// See
 /// [MDN's page on this](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/Heading_Elements)
 /// for further information.
+#[must_use]
 pub struct H1 {
     text: Cow<'static, str>,
     attrs: HashMap<Cow<'static, str>, Cow<'static, str>>,
@@ -41,17 +30,21 @@ pub struct H1 {
 
 impl_of_heading_new_fn!(H1, h1);
 
+impl_of_heading_mutator!(H1);
+
 into_grouping_union!(H1, BodyNode);
 
 heading_display!(H1);
 
 #[derive(Default, Debug, Clone)]
 #[cfg_attr(feature = "pub_fields", derive(FieldsAccessibleVariant))]
+#[cfg_attr(feature = "fuzz", derive(serde::Serialize, serde::Deserialize))]
 /// The <h2> tag.
 ///
 /// See
 /// [MDN's page on this](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/Heading_Elements)
 /// for further information.
+#[must_use]
 pub struct H2 {
     text: Cow<'static, str>,
     attrs: HashMap<Cow<'static, str>, Cow<'static, str>>,
@@ -59,17 +52,21 @@ pub struct H2 {
 
 impl_of_heading_new_fn!(H2, h2);
 
+impl_of_heading_mutator!(H2);
+
 into_grouping_union!(H2, BodyNode);
 
 heading_display!(H2);
 
 #[derive(Default, Debug, Clone)]
 #[cfg_attr(feature = "pub_fields", derive(FieldsAccessibleVariant))]
+#[cfg_attr(feature = "fuzz", derive(serde::Serialize, serde::Deserialize))]
 /// The <h3> tag.
 ///
 /// See
 /// [MDN's page on this](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/Heading_Elements)
 /// for further information.
+#[must_use]
 pub struct H3 {
     text: Cow<'static, str>,
     attrs: HashMap<Cow<'static, str>, Cow<'static, str>>,
@@ -77,17 +74,21 @@ pub struct H3 {
 
 impl_of_heading_new_fn!(H3, h3);
 
+impl_of_heading_mutator!(H3);
+
 into_grouping_union!(H3, BodyNode);
 
 heading_display!(H3);
 
 #[derive(Default, Debug, Clone)]
 #[cfg_attr(feature = "pub_fields", derive(FieldsAccessibleVariant))]
+#[cfg_attr(feature = "fuzz", derive(serde::Serialize, serde::Deserialize))]
 /// The <h4> tag.
 ///
 /// See
 /// [MDN's page on this](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/Heading_Elements)
 /// for further information.
+#[must_use]
 pub struct H4 {
     text: Cow<'static, str>,
     attrs: HashMap<Cow<'static, str>, Cow<'static, str>>,
@@ -95,17 +96,21 @@ pub struct H4 {
 
 impl_of_heading_new_fn!(H4, h4);
 
+impl_of_heading_mutator!(H4);
+
 into_grouping_union!(H4, BodyNode);
 
 heading_display!(H4);
 
 #[derive(Default, Debug, Clone)]
 #[cfg_attr(feature = "pub_fields", derive(FieldsAccessibleVariant))]
+#[cfg_attr(feature = "fuzz", derive(serde::Serialize, serde::Deserialize))]
 /// The <h5> tag.
 ///
 /// See
 /// [MDN's page on this](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/Heading_Elements)
 /// for further information.
+#[must_use]
 pub struct H5 {
     text: Cow<'static, str>,
     attrs: HashMap<Cow<'static, str>, Cow<'static, str>>,
@@ -113,23 +118,29 @@ pub struct H5 {
 
 impl_of_heading_new_fn!(H5, h5);
 
+impl_of_heading_mutator!(H5);
+
 into_grouping_union!(H5, BodyNode);
 
 heading_display!(H5);
 
 #[derive(Default, Debug, Clone)]
 #[cfg_attr(feature = "pub_fields", derive(FieldsAccessibleVariant))]
+#[cfg_attr(feature = "fuzz", derive(serde::Serialize, serde::Deserialize))]
 /// The <h6> tag.
 ///
 /// See
 /// [MDN's page on this](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/Heading_Elements)
 /// for further information.
+#[must_use]
 pub struct H6 {
     text: Cow<'static, str>,
     attrs: HashMap<Cow<'static, str>, Cow<'static, str>>,
 }
 
 impl_of_heading_new_fn!(H6, h6);
+
+impl_of_heading_mutator!(H6);
 
 into_grouping_union!(H6, BodyNode);
 
@@ -138,6 +149,7 @@ heading_display!(H6);
 utility_enum!(
     /// An attribute for a heading tag.
     #[allow(missing_docs)]
+    #[must_use]
     pub enum HeadingAttr {
         Class(Class),
         Id(Id),
