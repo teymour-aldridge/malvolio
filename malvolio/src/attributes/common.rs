@@ -4,6 +4,7 @@ use super::IntoAttribute;
 
 #[derive(Debug, Derivative, Clone)]
 #[derivative(Default(new = "true"))]
+#[must_use]
 
 /// A builder for constructing values for the `class` attribute.
 pub struct Class(HashSet<Cow<'static, str>>);
@@ -44,6 +45,7 @@ impl IntoAttribute for Class {
 #[derive(Debug, Default, Clone)]
 
 /// The "id" attribute.
+#[must_use]
 pub struct Id(Cow<'static, str>);
 
 impl Id {

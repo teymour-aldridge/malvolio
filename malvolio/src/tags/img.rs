@@ -9,6 +9,7 @@ use crate::{
 #[cfg_attr(feature = "pub_fields", derive(FieldsAccessibleVariant))]
 #[cfg_attr(feature = "fuzz", derive(serde::Serialize, serde::Deserialize))]
 /// The `<img>` tag.
+#[must_use]
 pub struct Img {
     attrs: HashMap<Cow<'static, str>, Cow<'static, str>>,
 }

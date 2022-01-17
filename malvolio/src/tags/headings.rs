@@ -22,6 +22,7 @@ use super::body::body_node::BodyNode;
 /// See
 /// [MDN's page on this](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/Heading_Elements)
 /// for further information.
+#[must_use]
 pub struct H1 {
     text: Cow<'static, str>,
     attrs: HashMap<Cow<'static, str>, Cow<'static, str>>,
@@ -43,6 +44,7 @@ heading_display!(H1);
 /// See
 /// [MDN's page on this](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/Heading_Elements)
 /// for further information.
+#[must_use]
 pub struct H2 {
     text: Cow<'static, str>,
     attrs: HashMap<Cow<'static, str>, Cow<'static, str>>,
@@ -64,6 +66,7 @@ heading_display!(H2);
 /// See
 /// [MDN's page on this](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/Heading_Elements)
 /// for further information.
+#[must_use]
 pub struct H3 {
     text: Cow<'static, str>,
     attrs: HashMap<Cow<'static, str>, Cow<'static, str>>,
@@ -85,6 +88,7 @@ heading_display!(H3);
 /// See
 /// [MDN's page on this](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/Heading_Elements)
 /// for further information.
+#[must_use]
 pub struct H4 {
     text: Cow<'static, str>,
     attrs: HashMap<Cow<'static, str>, Cow<'static, str>>,
@@ -106,6 +110,7 @@ heading_display!(H4);
 /// See
 /// [MDN's page on this](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/Heading_Elements)
 /// for further information.
+#[must_use]
 pub struct H5 {
     text: Cow<'static, str>,
     attrs: HashMap<Cow<'static, str>, Cow<'static, str>>,
@@ -127,6 +132,7 @@ heading_display!(H5);
 /// See
 /// [MDN's page on this](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/Heading_Elements)
 /// for further information.
+#[must_use]
 pub struct H6 {
     text: Cow<'static, str>,
     attrs: HashMap<Cow<'static, str>, Cow<'static, str>>,
@@ -143,6 +149,7 @@ heading_display!(H6);
 utility_enum!(
     /// An attribute for a heading tag.
     #[allow(missing_docs)]
+    #[must_use]
     pub enum HeadingAttr {
         Class(Class),
         Id(Id),

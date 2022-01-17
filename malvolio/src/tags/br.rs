@@ -23,6 +23,7 @@ use super::body::body_node::BodyNode;
     feature = "fuzz",
     derive(fuzzcheck::DefaultMutator, serde::Serialize, serde::Deserialize)
 )]
+#[must_use]
 pub struct Br;
 
 impl Display for Br {

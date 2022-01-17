@@ -3,15 +3,15 @@ This source code file is distributed subject to the terms of the Mozilla Public 
 A copy of this license can be found in the `licenses` directory at the root of this project.
 */
 
-#[allow(missing_docs)]
 use std::fmt::Display;
 
 use super::{body::Body, head::Head};
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Default)]
 #[cfg_attr(feature = "pub_fields", derive(FieldsAccessibleVariant))]
 #[cfg_attr(feature = "fuzz", derive(serde::Serialize, serde::Deserialize))]
 /// Construct a HTML document. If you are trying to render to a string, this is what you want to use.
+#[must_use]
 pub struct Html {
     head: Head,
     body: Body,
@@ -40,15 +40,6 @@ mod html_mutator {
 /// Creates a new `Html` tag – functionally equivalent to `Html::new()` (but easier to type.)
 pub fn html() -> Html {
     Html::new()
-}
-
-impl Default for Html {
-    fn default() -> Self {
-        Self {
-            head: Head::default(),
-            body: Body::default(),
-        }
-    }
 }
 
 impl Display for Html {

@@ -19,6 +19,7 @@ use super::head::head_node::HeadNode;
 ///
 /// See [MDN's page on this](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/meta) for
 /// further information.
+#[must_use]
 pub struct Meta {
     attrs: HashMap<Cow<'static, str>, Cow<'static, str>>,
 }

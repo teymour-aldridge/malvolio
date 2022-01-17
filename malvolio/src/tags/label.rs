@@ -17,6 +17,7 @@ use crate::{
 ///
 /// See the [MDN Web Docs](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/label)
 /// for further information.
+#[must_use]
 pub struct Label {
     text: Cow<'static, str>,
     attrs: HashMap<Cow<'static, str>, Cow<'static, str>>,

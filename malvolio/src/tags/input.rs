@@ -21,6 +21,7 @@ use super::body::body_node::BodyNode;
 ///
 /// See the [MDN Web Docs](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input)
 /// for further information.
+#[must_use]
 pub struct Input {
     attrs: HashMap<Cow<'static, str>, Cow<'static, str>>,
 }

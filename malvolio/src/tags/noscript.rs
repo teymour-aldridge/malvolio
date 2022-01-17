@@ -11,6 +11,7 @@ use crate::into_grouping_union;
 ///
 /// See [MDN's page on this](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/noscript) for
 /// further information.
+#[must_use]
 pub struct NoScript {
     text: Cow<'static, str>,
 }

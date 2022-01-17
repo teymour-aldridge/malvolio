@@ -24,6 +24,7 @@ use super::{body::body_node::BodyNode, input::Name, option::SelectOption};
 ///
 /// See [MDN's page on this](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/select) for
 /// further information.
+#[must_use]
 pub struct Select {
     attrs: HashMap<Cow<'static, str>, Cow<'static, str>>,
     children: Vec<SelectOption>,

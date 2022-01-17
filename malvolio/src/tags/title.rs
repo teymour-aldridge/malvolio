@@ -17,6 +17,7 @@ use super::head::head_node::HeadNode;
 ///
 /// See the [MDN Web Docs](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/title) for more
 /// info.
+#[must_use]
 pub struct Title {
     text: Cow<'static, str>,
     attrs: HashMap<Cow<'static, str>, Cow<'static, str>>,

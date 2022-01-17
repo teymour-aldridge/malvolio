@@ -21,7 +21,8 @@ use super::input::{Name, Value};
 /// The `option` tag.
 ///
 /// See [MDN's page on this](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/option) for
-/// further information..
+/// further information.
+#[must_use]
 pub struct SelectOption {
     attrs: HashMap<Cow<'static, str>, Cow<'static, str>>,
     text: Cow<'static, str>,

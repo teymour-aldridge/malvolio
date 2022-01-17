@@ -14,6 +14,7 @@ pub mod head_node;
 #[derivative(Default = "new")]
 #[cfg_attr(feature = "pub_fields", derive(FieldsAccessibleVariant))]
 #[cfg_attr(feature = "fuzz", derive(serde::Serialize, serde::Deserialize))]
+#[must_use]
 /// The <head> tag.
 pub struct Head {
     children: Vec<HeadNode>,

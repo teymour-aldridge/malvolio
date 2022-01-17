@@ -29,6 +29,7 @@ use super::body::body_node::BodyNode;
 #[derivative(Default(new = "true"))]
 #[cfg_attr(feature = "pub_fields", derive(FieldsAccessibleVariant))]
 #[cfg_attr(feature = "fuzz", derive(serde::Serialize, serde::Deserialize))]
+#[must_use]
 pub struct A {
     attrs: HashMap<Cow<'static, str>, Cow<'static, str>>,
     text: Cow<'static, str>,

@@ -12,7 +12,7 @@ use crate::{
 #[derive(Default, Debug, Clone)]
 #[cfg_attr(feature = "pub_fields", derive(FieldsAccessibleVariant))]
 #[cfg_attr(feature = "fuzz", derive(serde::Serialize, serde::Deserialize))]
-
+#[must_use]
 /// A text node.
 pub struct Text {
     text: Cow<'static, str>,

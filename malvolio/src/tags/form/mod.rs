@@ -17,6 +17,7 @@ use crate::tags::body::body_node::BodyNode;
 #[derivative(Default(new = "true"))]
 #[cfg_attr(feature = "pub_fields", derive(FieldsAccessibleVariant))]
 #[cfg_attr(feature = "fuzz", derive(serde::Serialize, serde::Deserialize))]
+#[must_use]
 /// A HTML form. You can create a form with `Form::new()` or `Form::default()` (they are identical)
 /// and then use any of the provided methods to manipulate it (for example adding child elements or
 /// attributes).
