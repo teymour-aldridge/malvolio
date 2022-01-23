@@ -296,7 +296,7 @@ mod body_mutator {
             }
     }
 
-    #[derive(DefaultMutator, Clone)]
+    #[derive(Clone)]
     enum LeafNode {
         H1(H1),
         H2(H2),
@@ -311,6 +311,26 @@ mod body_mutator {
         Label(Label),
         NoScript(NoScript),
         Img(Img),
+    }
+
+    make_mutator! {
+        name: LeafNodeMutator,
+        recursive: false,
+        default: true,
+        type: enum LeafNode {
+            H1(H1),
+            H2(H2),
+            H3(H3),
+            H4(H4),
+            H5(H5),
+            H6(H6),
+            Br(Br),
+            A(A),
+            Input(Input),
+            Label(Label),
+            NoScript(NoScript),
+            Img(Img),
+        }
     }
 
     impl LeafNode {
