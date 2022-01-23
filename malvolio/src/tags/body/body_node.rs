@@ -273,6 +273,25 @@ mod body_mutator {
                     )]
                     children: Vec<BranchNode>
                 },
+                Form {
+                    #[field_mutator(
+                        VecMutator<BranchNode, RecurToMutator<BranchNodeMutator<M0_0, M1_0>>> = {
+                            VecMutator::new(self_.into(), 0..=usize::MAX)
+                        }
+                    )]
+                    children: Vec<BranchNode>,
+                    attrs: Vec<(Attr1String, Attr0String)>,
+                },
+                P {
+                    attrs: Vec<(Attr1String, Attr0String)>,
+                    text: Attr0String,
+                    #[field_mutator(
+                        VecMutator<BranchNode, RecurToMutator<BranchNodeMutator<M0_0, M1_0>>> = {
+                            VecMutator::new(self_.into(), 0..=usize::MAX)
+                        }
+                    )]
+                    children: Vec<BranchNode>,
+                },
                 LeafNode(LeafNode),
             }
     }
