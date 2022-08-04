@@ -19,7 +19,7 @@ macro_rules! heading_display {
                 f.write_str("<")?;
                 f.write_str(stringify!($name))?;
                 f.write_str(" ")?;
-                crate::utils::write_attributes(&self.attrs, f)?;
+                $crate::utils::write_attributes(&self.attrs, f)?;
                 f.write_str(">")?;
                 self.text.fmt(f)?;
                 f.write_str("</")?;
@@ -41,8 +41,8 @@ macro_rules! impl_of_heading_mutator {
                 fuzzcheck::mutators::map::MapMutator::new(
                     fuzzcheck::mutators::tuples::TupleMutatorWrapper::new(
                         fuzzcheck::mutators::tuples::Tuple2Mutator::new(
-                            crate::mutators::valid_attr_string_mutator::<0>(),
-                            crate::mutators::attr_mutator(),
+                            $crate::mutators::valid_attr_string_mutator::<0>(),
+                            $crate::mutators::attr_mutator(),
                         ),
                     ),
                     |h1: &$name| Some((h1.text.to_string(), h1.attrs.clone())),
@@ -114,7 +114,7 @@ macro_rules! impl_of_heading_new_fn {
                 self
             }
 
-            crate::define_raw_attribute_fn!();
+            $crate::define_raw_attribute_fn!();
 
             /// Read an attribute that has been set.
             pub fn read_attribute(
