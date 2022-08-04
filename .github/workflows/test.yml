@@ -19,7 +19,8 @@ jobs:
       - name: Check formatting
         run: cargo fmt -- --check
       - name: Lint
-        run: cargo clippy --features pub_fields -- -D warnings
+        run: cargo clippy -- -D warnings
+
   test:
     runs-on: ubuntu-latest
     steps:
@@ -28,7 +29,8 @@ jobs:
         with:
           toolchain: stable
           override: true
-          components: rustfmt, clippy
+      - name: Install nextest
+        run: curl -LsSf https://get.nexte.st/latest/linux | tar zxf - -C ${CARGO_HOME:-~/.cargo}/bin
       - uses: Swatinem/rust-cache@v1
       - name: Run tests
-        run: cargo test --workspace --features pub_fields
+        run: cargo nextest run
