@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.4.1
+
+- Updated the crate metadata (the source code itself is unchanged)
+
 ## 0.4.0
 
 ### Breaking changes
