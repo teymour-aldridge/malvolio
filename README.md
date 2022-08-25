@@ -34,6 +34,16 @@ malvolio::prelude::Form::new()
 
 Malvolio has API docs which are [hosted on docs.rs](https://docs.rs/malvolio).
 
+## License
+
+Malvolio is licensed under the BSD 3-Clause license - a copy of which may be
+found in the `LICENSE` file in the repository root, currently at
+<https://github.com/puck-rs/malvolio>.
+
+At your option, the program is also licensed under the terms of the Apache 2.0
+software license - details as to where the license can be located can be found
+in the aforementioned repository root, in the file `APACHE-2.0`.
+
 ## Semver
 
 Malvolio follows semantic versioning.

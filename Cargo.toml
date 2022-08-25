@@ -1,13 +1,13 @@
 [package]
 name = "malvolio"
-version = "0.4.0"
+version = "0.4.1"
 authors = ["Teymour Aldridge <teymour@reasoning.page>"]
 edition = "2021"
 readme = "README.md"
-description = "An HTML templating library."
-repository = "https://github.com/lovelace-ed/lovelace"
-homepage = "https://github.com/lovelace-ed/lovelace"
-license = "MPL-2.0"
+description = "A library for programmatically generating HTML."
+repository = "https://github.com/puck-rs/malvolio"
+homepage = "https://github.com/puck-rs/malvolio"
+license = "BSD-3-Clause OR Apache-2.0"
 keywords = ["web-applications", "HTML"]
 
 [dependencies]
